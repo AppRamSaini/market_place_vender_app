@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Market Place',
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.whiteColor,
-        fontFamily: 'Montserrat',
+        fontFamily: 'AlanSans',
         appBarTheme: AppBarTheme(
             centerTitle: false,
             backgroundColor: AppColors.whiteColor,
@@ -47,5 +47,4 @@ class MyApp extends StatelessWidget {
   }
 }
 
-var GOOGLE_MAP_API_KEY = "AIzaSyDfxooDr2NaBgyMYuzXsKcM8uCSOVfa1OI";
-// var GOOGLE_MAP_API_KEY = "AIzaSyAZdS5ILSddnuGPqz1TbLNd24wApLunFGU";
+var GOOGLE_MAP_API_KEY = "";

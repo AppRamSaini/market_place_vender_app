@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:market_place_app/data/models/user_profile_model.dart';
 import 'package:market_place_app/data/repository/offers_repository.dart';
-import 'package:market_place_app/data/repository/profile_repository.dart';
+import 'package:market_place_app/utils/app_colors.dart';
 import 'package:market_place_app/utils/custom.dart';
 import 'fetch_offers_event.dart';
 import 'fetch_offers_state.dart';
@@ -14,9 +13,9 @@ class FetchOffersBloc extends Bloc<FetchOffersEvent, FetchOffersState> {
       emit(FetchOffersLoading());
 
       try {
-        final offers = await repo.fetchOffersListApi();
+        final offers = await repo.fetchOffersListApi(event.context);
         if (offers is String) {
-          snackBar(event.context, offers.toString());
+          snackBar(event.context, offers.toString(),AppColors.redColor);
         } else {
           emit(FetchOffersSuccess(fetchOffersListModel: offers));
         }

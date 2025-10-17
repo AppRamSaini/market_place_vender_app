@@ -34,7 +34,7 @@ class LocalStorage {
   }
 
   // Clear all
-  static Future<void> clear(BuildContext context) async {
+  static Future<void> clearAll(BuildContext context) async {
     AppRouter().navigateAndClearStack(context, LoginScreen());
     await _preferences?.clear();
   }

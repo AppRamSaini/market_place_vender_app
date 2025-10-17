@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:market_place_app/data/models/merchant_business_profile_model.dart';
 
 /// Base Event
 abstract class BusinessRegistrationEvent {}
@@ -35,26 +36,26 @@ class OpeningHour {
   }
 }
 
-class BusinessImage {
-  final String url;
-  final String filename;
-
-  BusinessImage({required this.url, required this.filename});
-
-  factory BusinessImage.fromJson(Map<String, dynamic> json) {
-    return BusinessImage(
-      url: json['url'] as String,
-      filename: json['filename'] as String,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'url': url,
-      'filename': filename,
-    };
-  }
-}
+// class BusinessImage {
+//   final String url;
+//   final String filename;
+//
+//   BusinessImage({required this.url, required this.filename});
+//
+//   factory BusinessImage.fromJson(Map<String, dynamic> json) {
+//     return BusinessImage(
+//       url: json['url'] as String,
+//       filename: json['filename'] as String,
+//     );
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'url': url,
+//       'filename': filename,
+//     };
+//   }
+// }
 
 /// Merchant Registration Model
 class MerchantRegistrationModel {
@@ -66,6 +67,7 @@ class MerchantRegistrationModel {
   String? gstNumber;
   String? state;
   String? city;
+  String? country;
   String? pinCode;
   String? landMark;
   String? category;
@@ -90,6 +92,7 @@ class MerchantRegistrationModel {
     this.businessRegistrationNo,
     this.gstNumber,
     this.state,
+    this.country,
     this.city,
     this.pinCode,
     this.landMark,
@@ -107,4 +110,59 @@ class MerchantRegistrationModel {
     this.businessImages,
     this.openingHours,
   });
+
+  MerchantRegistrationModel copyWith({
+    String? name,
+    String? mobile,
+    String? email,
+    String? businessName,
+    String? businessRegistrationNo,
+    String? gstNumber,
+    String? state,
+    String? country,
+    String? city,
+    String? pinCode,
+    String? landMark,
+    String? category,
+    String? subCategory,
+    String? lat,
+    String? long,
+    String? address,
+    String? aadhaarFront,
+    String? aadhaarBack,
+    String? panImage,
+    String? gstCertificate,
+    String? businessLogo,
+    String? weekOffDay,
+    List<BusinessImage>? businessImages,
+    Map<String, OpeningHour>? openingHours,
+  }) {
+    return MerchantRegistrationModel(
+      name: name ?? this.name,
+      mobile: mobile ?? this.mobile,
+      email: email ?? this.email,
+      businessName: businessName ?? this.businessName,
+      businessRegistrationNo:
+      businessRegistrationNo ?? this.businessRegistrationNo,
+      gstNumber: gstNumber ?? this.gstNumber,
+      state: state ?? this.state,
+      city: city ?? this.city,
+      country: country ?? this.country,
+      pinCode: pinCode ?? this.pinCode,
+      landMark: landMark ?? this.landMark,
+      category: category ?? this.category,
+      subCategory: subCategory ?? this.subCategory,
+      lat: lat ?? this.lat,
+      long: long ?? this.long,
+      address: address ?? this.address,
+      aadhaarFront: aadhaarFront ?? this.aadhaarFront,
+      aadhaarBack: aadhaarBack ?? this.aadhaarBack,
+      panImage: panImage ?? this.panImage,
+      gstCertificate: gstCertificate ?? this.gstCertificate,
+      businessLogo: businessLogo ?? this.businessLogo,
+      weekOffDay: weekOffDay ?? this.weekOffDay,
+      businessImages: businessImages ?? this.businessImages,
+      openingHours: openingHours ?? this.openingHours,
+    );
+  }
 }

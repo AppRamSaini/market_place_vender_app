@@ -14,6 +14,7 @@ class ApiEndPoints {
   static const updateOffers = '$baseUrl/offer/update';
   static const viewOffers = '$baseUrl/offer/get_details';
   static const fetchBusinessProfile = '$baseUrl/vendor/get_details';
+  static const merchantDashboard = '$baseUrl/vendor/dashboard';
 
 
   static const getUserProfile = '$baseUrl/get-user';

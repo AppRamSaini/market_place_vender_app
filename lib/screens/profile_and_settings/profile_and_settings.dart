@@ -1,15 +1,7 @@
-import 'package:market_place_app/bloc/business_registration/fetch_business_details/fetch_business_details_bloc.dart';
-import 'package:market_place_app/bloc/business_registration/fetch_business_details/fetch_business_details_event.dart';
-import 'package:market_place_app/bloc/business_registration/fetch_business_details/fetch_business_details_state.dart';
-import 'package:market_place_app/data/models/merchant_business_profile_model.dart';
-import 'package:market_place_app/screens/business_profile/business_details.dart';
-// import 'package:market_place_app/screens/business_profile/business_details.dart';
-import 'package:market_place_app/screens/business_profile/business_gallery.dart';
-import 'package:market_place_app/screens/business_profile/merchant_registration.dart';
-import 'package:market_place_app/screens/business_profile/upload_documents.dart';
-import 'package:market_place_app/screens/settings/dialogs.dart';
-import 'package:market_place_app/utils/exports.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:market_place_app/bloc/notification_bloc/notifications_state.dart';
+import 'package:market_place_app/screens/profile_and_settings/delete_account.dart';
+
+import '../../utils/exports.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -25,6 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    _reFetchData();
   }
 
   Future _reFetchData() async => context
@@ -33,7 +26,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    _reFetchData();
     return WillPopScope(
       onWillPop: () async {
         bool shouldExit = await exitPageDialog(context);
@@ -59,7 +51,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         style: AppStyle.medium_14(AppColors.redColor)));
               } else if (state is FetchBusinessDetailsSuccess) {
                 final businessProfile = state.profileModel.data;
-
                 if (businessProfile != null) {
                   merchantRegistrationModel = MerchantRegistrationModel(
                       name: businessProfile.vendor?.name ?? '',
@@ -160,9 +151,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                   {
                     "title": "Delete Account",
-                    "icon": Icons.delete_forever_sharp
+                    "icon": Icons.delete_forever_sharp,
+                    "page": DeleteUserAccount()
                   },
                   {"title": "Logout", "icon": Icons.logout},
+
                 ];
                 return RefreshIndicator(
                   onRefresh: _reFetchData,
@@ -170,8 +163,58 @@ class _SettingsPageState extends State<SettingsPage> {
                     slivers: [
                       customSliverAppbar(
                         expandedHeight: size.height * 0.2,
-                        title: Text("Profile Settings",
-                            style: AppStyle.medium_18(AppColors.themeColor)),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Profile Settings",
+                                style:
+                                    AppStyle.medium_18(AppColors.themeColor)),
+                            Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 15, right: 5),
+                                  child: GestureDetector(
+                                    onTap: () => AppRouter().navigateTo(
+                                        context, NotificationScreen()),
+                                    child: CircleAvatar(
+                                      backgroundColor: AppColors.theme10,
+                                      child: Icon(
+                                        Icons.notifications,
+                                        color: AppColors.themeColor,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                // BlocBuilder<NotificationsBloc, NotificationsState>(
+                                //     builder: (context, state) {
+                                //       if (state is NotificationsSuccess) {
+                                //         final user = state.getNotificationModel.data;
+                                //         return user!.unread ==0
+                                //             ? SizedBox()
+                                //             :
+
+                                CircleAvatar(
+                                  radius: 10,
+                                  backgroundColor: AppColors.redColor,
+                                  child: Text(
+                                    '12+',
+                                    style: AppStyle.normal_10(
+                                        AppColors.whiteColor),
+                                  ),
+                                )
+
+                                // ;
+                                //   } else {
+                                //     return SizedBox();
+                                //   }
+                                // })
+                              ],
+                            )
+                          ],
+                        ),
                         flexibleSpace: LayoutBuilder(
                           builder: (context, constraints) {
                             var percent =
@@ -235,8 +278,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                                                     .businessName ??
                                                                 '',
                                                             style: AppStyle
-                                                                .bold_11(AppColors
-                                                                    .blackColor),
+                                                                .semiBold_12(
+                                                                    AppColors
+                                                                        .blackColor),
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
@@ -297,7 +341,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             alignment: Alignment.center,
                             child: settingsWidget(
                                 onTap: () {
-                                  if (index != 7) {
+                                  if (index != 8) {
                                     AppRouter().navigateTo(
                                         context, settingTitles[index]['page']);
                                   } else {
@@ -317,195 +361,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 return SizedBox();
               }
             },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Widget settingsWidget(
-        {IconData? icon,
-        Widget? trailingIcon,
-        String? title,
-        void Function()? onTap}) =>
-    Card(
-      elevation: 0,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-      color: AppColors.theme5,
-      child: ListTile(
-        onTap: onTap,
-        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-        leading: Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                color: AppColors.theme5.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(5)),
-            child: Icon(icon, color: AppColors.theme5.withOpacity(0.6))),
-        title: Text(title.toString(),
-            style: AppStyle.normal_16(AppColors.black20)),
-        trailing: Icon(Icons.arrow_forward_ios_sharp,
-            color: AppColors.theme5.withOpacity(0.5), size: 20),
-      ),
-    );
-
-class ShimmerScreen extends StatelessWidget {
-  const ShimmerScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Shimmer.fromColors(
-        baseColor: Colors.grey.shade900,
-        highlightColor: Colors.grey.shade800,
-        direction: ShimmerDirection.ttb,
-        period: const Duration(milliseconds: 2000),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image Placeholder
-              Container(
-                height: 200,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[900],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Title line
-              Container(
-                height: 20,
-                width: 220,
-                color: Colors.grey[900],
-              ),
-              const SizedBox(height: 10),
-
-              // Subtitle line
-              Container(
-                height: 16,
-                width: 120,
-                color: Colors.grey[900],
-              ),
-              const SizedBox(height: 10),
-
-              // Long text
-              Container(
-                height: 16,
-                width: double.infinity,
-                color: Colors.grey[900],
-              ),
-              const SizedBox(height: 10),
-              // Small line
-              Container(
-                height: 16,
-                width: 100,
-                color: Colors.grey[900],
-              ),
-              const SizedBox(height: 20),
-              // 4 Rounded Buttons Row
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: List.generate(4, (index) {
-                  return Container(
-                    height: 60,
-                    width: (MediaQuery.of(context).size.width - 52) / 2,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[900],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  );
-                }),
-              ),
-              const SizedBox(height: 20),
-
-              // Divider
-              Container(
-                  height: 1, width: double.infinity, color: Colors.grey[900]),
-              const SizedBox(height: 20),
-
-              // Small lines row
-              Row(
-                children: [
-                  Container(
-                    height: 20,
-                    width: 40,
-                    color: Colors.grey[900],
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    height: 20,
-                    width: 40,
-                    color: Colors.grey[900],
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    height: 20,
-                    width: 40,
-                    color: Colors.grey[900],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              // Another text line
-              Container(height: 20, width: 180, color: Colors.grey[900]),
-              const SizedBox(height: 10),
-              Container(
-                height: 20,
-                width: double.infinity,
-                color: Colors.grey[900],
-              ),
-              const SizedBox(height: 20),
-
-              // Small lines row
-              Row(
-                children: [
-                  Container(
-                    height: 20,
-                    width: 40,
-                    color: Colors.grey[900],
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    height: 20,
-                    width: 40,
-                    color: Colors.grey[900],
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    height: 20,
-                    width: 40,
-                    color: Colors.grey[900],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              // Another text line
-              Container(height: 20, width: 180, color: Colors.grey[900]),
-              const SizedBox(height: 10),
-              Container(
-                height: 20,
-                width: double.infinity,
-                color: Colors.grey[900],
-              ),
-              const SizedBox(height: 20),
-
-              // Small lines row
-              Container(height: 20, width: 120, color: Colors.grey[900]),
-              const SizedBox(height: 10),
-              Container(height: 20, width: 180, color: Colors.grey[900]),
-              const SizedBox(height: 10),
-              Container(
-                height: 20,
-                width: double.infinity,
-                color: Colors.grey[900],
-              ),
-            ],
           ),
         ),
       ),

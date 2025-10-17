@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:market_place_app/utils/app_styles.dart';
 import 'package:market_place_app/utils/app_colors.dart';
 
-Widget CustomTextField(
+Widget customTextField(
         {String? hintText,
         bool readOnly = false,
           bool showPrefix = false,

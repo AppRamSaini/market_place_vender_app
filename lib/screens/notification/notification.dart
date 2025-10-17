@@ -43,7 +43,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           }
         },
         child: Scaffold(
-          appBar: customAppbar(title: "Notification"),
+          appBar: customAppbar(title: "Notification",context: context),
           body: RefreshIndicator(
             onRefresh: onRefresh,
             child: BlocBuilder<NotificationsBloc, NotificationsState>(
@@ -82,7 +82,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         var date = formatDateFromString(
                             dataList![index].createdAt!.toString());
 
-
                         print('<>>>>>>>>>>>>>>>>>${dataList[index].title}');
 
                         return Card(
@@ -94,13 +93,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             dense: true,
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: size.width * 0.02),
-                            title: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(dataList![index].title!.toString() ?? '',
-
                                     style: AppStyle.medium_14(
                                         AppColors.themeColor)),
-
                                 Text(date.toString(),
                                     style:
                                         AppStyle.normal_10(AppColors.redColor))

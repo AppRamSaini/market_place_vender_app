@@ -1,26 +1,23 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:market_place_app/data/repository/offers_repository.dart';
-import 'package:market_place_app/utils/app_colors.dart';
-import 'package:market_place_app/utils/custom.dart';
-import 'fetch_offers_event.dart';
-import 'fetch_offers_state.dart';
+import 'package:market_place_app/utils/exports.dart';
+import 'dashboard_offers_event.dart';
 
-class FetchOffersBloc extends Bloc<FetchOffersEvent, FetchOffersState> {
+class FetchDashboardOffersBloc
+    extends Bloc<FetchDashboardOffersEvent, FetchDashboardOffersState> {
   final repo = OffersRepository();
 
-  FetchOffersBloc() : super(FetchOffersInitial()) {
-    on<GetOffersEvent>((event, emit) async {
-      emit(FetchOffersLoading());
+  FetchDashboardOffersBloc() : super(FetchDashboardOffersInitial()) {
+    on<DashboardOffersEvent>((event, emit) async {
+      emit(FetchDashboardOffersLoading());
 
       try {
-        final offers = await repo.fetchOffersListApi(event.context);
+        final offers = await repo.fetchMerchantDashboard(event.context);
         if (offers is String) {
-          snackBar(event.context, offers.toString(),AppColors.redColor);
+          snackBar(event.context, offers.toString(), AppColors.redColor);
         } else {
-          emit(FetchOffersSuccess(fetchOffersListModel: offers));
+          emit(FetchDashboardOffersSuccess(merchantDashboardModel: offers));
         }
       } catch (e) {
-        emit(FetchOffersFailure(error: e.toString()));
+        emit(FetchDashboardOffersFailure(error: e.toString()));
       }
     });
   }

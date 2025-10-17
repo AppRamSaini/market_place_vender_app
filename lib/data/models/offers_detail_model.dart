@@ -59,6 +59,54 @@ class Data {
 
 class Record {
   String? id;
+  Vendor? vendor;
+  Flat? flat;
+  dynamic percentage;
+  String? type;
+  String? status;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  int? v;
+
+  Record({
+    this.id,
+    this.vendor,
+    this.flat,
+    this.percentage,
+    this.type,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
+  });
+
+  factory Record.fromJson(Map<String, dynamic> json) => Record(
+    id: json["_id"],
+    vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
+    flat: json["flat"] == null ? null : Flat.fromJson(json["flat"]),
+    percentage: json["percentage"],
+    type: json["type"],
+    status: json["status"],
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+    v: json["__v"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "vendor": vendor?.toJson(),
+    "flat": flat?.toJson(),
+    "percentage": percentage,
+    "type": type,
+    "status": status,
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    "__v": v,
+  };
+}
+
+class Flat {
+  String? id;
   String? title;
   String? description;
   int? discountPercentage;
@@ -66,15 +114,13 @@ class Record {
   int? minBillAmount;
   DateTime? expiryDate;
   String? offerImage;
-  String? status;
-  Vendor? vendor;
   int? amount;
-  bool? isExpire;
+  bool? isExpired;
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
 
-  Record({
+  Flat({
     this.id,
     this.title,
     this.description,
@@ -83,16 +129,14 @@ class Record {
     this.minBillAmount,
     this.expiryDate,
     this.offerImage,
-    this.status,
-    this.vendor,
     this.amount,
-    this.isExpire,
+    this.isExpired,
     this.createdAt,
     this.updatedAt,
     this.v,
   });
 
-  factory Record.fromJson(Map<String, dynamic> json) => Record(
+  factory Flat.fromJson(Map<String, dynamic> json) => Flat(
     id: json["_id"],
     title: json["title"],
     description: json["description"],
@@ -101,10 +145,8 @@ class Record {
     minBillAmount: json["minBillAmount"],
     expiryDate: json["expiryDate"] == null ? null : DateTime.parse(json["expiryDate"]),
     offerImage: json["offer_image"],
-    status: json["status"],
-    vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
     amount: json["amount"],
-    isExpire: json["IsExpire"],
+    isExpired: json["isExpired"],
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
@@ -119,10 +161,8 @@ class Record {
     "minBillAmount": minBillAmount,
     "expiryDate": expiryDate?.toIso8601String(),
     "offer_image": offerImage,
-    "status": status,
-    "vendor": vendor?.toJson(),
     "amount": amount,
-    "IsExpire": isExpire,
+    "isExpired": isExpired,
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
@@ -139,6 +179,7 @@ class Vendor {
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
+  String? email;
 
   Vendor({
     this.id,
@@ -150,6 +191,7 @@ class Vendor {
     this.createdAt,
     this.updatedAt,
     this.v,
+    this.email,
   });
 
   factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
@@ -162,6 +204,7 @@ class Vendor {
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
+    email: json["email"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -174,5 +217,6 @@ class Vendor {
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
+    "email": email,
   };
 }

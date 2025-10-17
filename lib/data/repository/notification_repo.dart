@@ -1,14 +1,6 @@
-import 'package:dio/dio.dart';
-import 'package:market_place_app/bloc/home_data_bloc/homepage_bloc/homepage_event.dart';
-import 'package:market_place_app/bloc/notification_bloc/notifications_bloc.dart';
-import 'package:market_place_app/bloc/sos_bloc/sos_event.dart';
-import 'package:market_place_app/data/models/delivery_details_model.dart';
-import 'package:market_place_app/data/models/delivery_listing_model.dart';
 import 'package:market_place_app/data/models/get_notification_model.dart';
-import 'package:market_place_app/data/models/home_data_model.dart';
 import 'package:market_place_app/data/models/notification_types_model.dart';
 import 'package:market_place_app/data/models/notification_update_model.dart';
-import 'package:market_place_app/data/models/sos_history_model.dart';
 import 'package:market_place_app/data/models/support_model.dart';
 import 'package:market_place_app/utils/exports.dart';
 

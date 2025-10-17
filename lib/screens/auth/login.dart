@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text("Mobile Number",
                       style: AppStyle.normal_14(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       keyboardType: TextInputType.number,
                       maxLength: 10,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }),
 
                   /*      SizedBox(height: size.height * 0.03),
-                    CustomTextField(
+                    customTextField(
                         hintText: 'Enter your email address',
                         controller: emailController,
                         validator: (value) {
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         }),
                     SizedBox(height: size.height * 0.03),
-                    CustomTextField(
+                    customTextField(
                       hintText: 'Enter your password',
                       controller: passwordController,
                       suffix: const Padding(

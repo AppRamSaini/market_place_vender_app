@@ -1,12 +1,7 @@
-import 'package:market_place_app/bloc/merchant_offers/view_offers_details/view_offers_bloc.dart';
-import 'package:market_place_app/bloc/merchant_offers/view_offers_details/view_offers_state.dart';
-import 'package:market_place_app/data/models/fetchoffers_model.dart';
-import 'package:market_place_app/screens/my_offers/create_offers.dart';
 import '../../utils/exports.dart';
 
 class ViewOffersDetails extends StatefulWidget {
   const ViewOffersDetails({super.key});
-
   @override
   State<ViewOffersDetails> createState() => _ViewOffersDetailsState();
 }
@@ -57,21 +52,15 @@ class _ViewOffersDetailsState extends State<ViewOffersDetails> {
                               icon: const Icon(Icons.edit,
                                   size: 20, color: AppColors.whiteColor),
                               onPressed: () {
-                                OffersList data = OffersList(
+                                OffersList? data = OffersList(
                                     id: offersData!.record!.id.toString(),
-                                    title: offersData!.record!.title.toString(),
-                                    description:
-                                        offersData!.record!.title.toString(),
-                                    discountPercentage:
-                                        offersData!.record!.discountPercentage,
-                                    maxDiscountCap:
-                                        offersData!.record!.maxDiscountCap,
-                                    minBillAmount:
-                                        offersData!.record!.minBillAmount,
-                                    expiryDate: offersData!.record!.expiryDate,
-                                    amount: offersData!.record!.amount,
-                                    status:
-                                        offersData!.record!.status.toString());
+                                    flat: offersData.record!.flat,
+                                    percentage: offersData.record!.flat,
+                                    type: offersData.record!.type,
+                                    status: offersData.record!.status,
+                                    v: offersData.record!.v,
+                                    vendor:
+                                        offersData.record!.vendor.toString());
                                 AppRouter().navigateTo(context,
                                     CreateOffers(data: data, forUpdate: true));
                               })),
@@ -118,24 +107,22 @@ class _ViewOffersDetailsState extends State<ViewOffersDetails> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: profilePickImage(
-                                'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Burger_King_logo_%281999%E2%80%932020%29.svg/1012px-Burger_King_logo_%281999%E2%80%932020%29.svg.png')),
-                        SizedBox(width: 6),
+                        profilePickImage(
+                            'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Burger_King_logo_%281999%E2%80%932020%29.svg/1012px-Burger_King_logo_%281999%E2%80%932020%29.svg.png'),
+                        SizedBox(width: 5),
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            padding: const EdgeInsets.symmetric(horizontal: 3),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text("Burger King Farm",
-                                    style: AppStyle.medium_16(
+                                    style: AppStyle.medium_18(
                                         AppColors.blackColor)),
                                 Text(
                                   "Flat 30% OFF on orders above ₹1000",
-                                  style: AppStyle.normal_12(AppColors.black20),
+                                  style: AppStyle.normal_13(AppColors.black20),
                                 ),
                               ],
                             ),
@@ -283,87 +270,3 @@ Widget trackerData(
         ],
       ),
     );
-
-class BurgerKingShimmer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Image
-              Container(
-                height: 200,
-                width: double.infinity,
-                color: Colors.grey,
-              ),
-              const SizedBox(height: 16),
-
-              // Logo + Text
-              Row(
-                children: [
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(height: 12, width: 120, color: Colors.grey),
-                      const SizedBox(height: 6),
-                      Container(height: 10, width: 180, color: Colors.grey),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Repeated text rows
-              for (int i = 0; i < 5; i++) ...[
-                Container(
-                    height: 12, width: double.infinity, color: Colors.grey),
-                const SizedBox(height: 10),
-              ],
-
-              const SizedBox(height: 20),
-
-              // Total amount card
-              Container(
-                height: 60,
-                width: double.infinity,
-                color: Colors.grey,
-              ),
-
-              const SizedBox(height: 20),
-
-              // Bottom 3 stats boxes
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(3, (index) {
-                  return Expanded(
-                    child: Container(
-                      height: 70,
-                      margin: EdgeInsets.symmetric(horizontal: 6),
-                      color: Colors.grey,
-                    ),
-                  );
-                }),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

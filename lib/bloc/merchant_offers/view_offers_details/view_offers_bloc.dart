@@ -11,7 +11,7 @@ class ViewOffersBloc extends Bloc<ViewOffersEvent, ViewOffersState> {
     on<ViewOffersDetailsEvent>((event, emit) async {
       emit(ViewOffersLoading());
       try {
-        final offers = await repo.fetchOffersDetailsApi(event.offersId.toString());
+        final offers = await repo.fetchOffersDetailsApi(event);
         if (offers is String) {
           snackBar(event.context, offers.toString());
         } else {

@@ -31,27 +31,31 @@ class UpdateMerchantBusinessModel {
 
 class Data {
   OpeningHours? openingHours;
-  bool? adharVerify;
-  bool? panCardVerify;
-  bool? gstCertificateVerify;
+  dynamic aadhaarFront;
+  dynamic aadhaarBack;
+  String? aadhaarVerify;
+  String? country;
   String? id;
+  String? state;
   String? businessName;
   String? city;
   String? area;
   int? pincode;
   String? category;
   String? subcategory;
-  bool? panCard;
-  dynamic gstNo;
+  String? businessRegister;
   String? address;
   double? lat;
   double? long;
-  dynamic landmark;
   String? adharFront;
   String? adharBack;
+  bool? adharVerify;
   String? panCardImage;
+  String? panCardVerify;
   String? gstCertificate;
-  dynamic shopLicense;
+  String? gstCertificateVerify;
+  String? gstNumber;
+  List<BusinessImage>? businessImage;
   String? businessLogo;
   DateTime? weeklyOffDay;
   Vendor? vendor;
@@ -60,34 +64,34 @@ class Data {
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
-  List<BusinessImage>? businessImage;
-  String? businessRegister;
-  String? gstNumber;
-  String? state;
 
   Data({
     this.openingHours,
-    this.adharVerify,
-    this.panCardVerify,
-    this.gstCertificateVerify,
+    this.aadhaarFront,
+    this.aadhaarBack,
+    this.aadhaarVerify,
+    this.country,
     this.id,
+    this.state,
     this.businessName,
     this.city,
     this.area,
     this.pincode,
     this.category,
     this.subcategory,
-    this.panCard,
-    this.gstNo,
+    this.businessRegister,
     this.address,
     this.lat,
     this.long,
-    this.landmark,
     this.adharFront,
     this.adharBack,
+    this.adharVerify,
     this.panCardImage,
+    this.panCardVerify,
     this.gstCertificate,
-    this.shopLicense,
+    this.gstCertificateVerify,
+    this.gstNumber,
+    this.businessImage,
     this.businessLogo,
     this.weeklyOffDay,
     this.vendor,
@@ -96,35 +100,35 @@ class Data {
     this.createdAt,
     this.updatedAt,
     this.v,
-    this.businessImage,
-    this.businessRegister,
-    this.gstNumber,
-    this.state,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     openingHours: json["opening_hours"] == null ? null : OpeningHours.fromJson(json["opening_hours"]),
-    adharVerify: json["adhar_verify"],
-    panCardVerify: json["pan_card_verify"],
-    gstCertificateVerify: json["gst_certificate_verify"],
+    aadhaarFront: json["aadhaar_front"],
+    aadhaarBack: json["aadhaar_back"],
+    aadhaarVerify: json["aadhaar_verify"],
+    country: json["country"],
     id: json["_id"],
+    state: json["state"],
     businessName: json["business_name"],
     city: json["city"],
     area: json["area"],
     pincode: json["pincode"],
     category: json["category"],
     subcategory: json["subcategory"],
-    panCard: json["pan_card"],
-    gstNo: json["GST_no"],
+    businessRegister: json["business_register"],
     address: json["address"],
     lat: json["lat"]?.toDouble(),
     long: json["long"]?.toDouble(),
-    landmark: json["landmark"],
     adharFront: json["adhar_front"],
     adharBack: json["adhar_back"],
+    adharVerify: json["adhar_verify"],
     panCardImage: json["pan_card_image"],
+    panCardVerify: json["pan_card_verify"],
     gstCertificate: json["gst_certificate"],
-    shopLicense: json["shop_license"],
+    gstCertificateVerify: json["gst_certificate_verify"],
+    gstNumber: json["gst_number"],
+    businessImage: json["business_image"] == null ? [] : List<BusinessImage>.from(json["business_image"]!.map((x) => BusinessImage.fromJson(x))),
     businessLogo: json["business_logo"],
     weeklyOffDay: json["weekly_off_day"] == null ? null : DateTime.parse(json["weekly_off_day"]),
     vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
@@ -133,35 +137,35 @@ class Data {
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
-    businessImage: json["business_image"] == null ? [] : List<BusinessImage>.from(json["business_image"]!.map((x) => BusinessImage.fromJson(x))),
-    businessRegister: json["business_register"],
-    gstNumber: json["gst_number"],
-    state: json["state"],
   );
 
   Map<String, dynamic> toJson() => {
     "opening_hours": openingHours?.toJson(),
-    "adhar_verify": adharVerify,
-    "pan_card_verify": panCardVerify,
-    "gst_certificate_verify": gstCertificateVerify,
+    "aadhaar_front": aadhaarFront,
+    "aadhaar_back": aadhaarBack,
+    "aadhaar_verify": aadhaarVerify,
+    "country": country,
     "_id": id,
+    "state": state,
     "business_name": businessName,
     "city": city,
     "area": area,
     "pincode": pincode,
     "category": category,
     "subcategory": subcategory,
-    "pan_card": panCard,
-    "GST_no": gstNo,
+    "business_register": businessRegister,
     "address": address,
     "lat": lat,
     "long": long,
-    "landmark": landmark,
     "adhar_front": adharFront,
     "adhar_back": adharBack,
+    "adhar_verify": adharVerify,
     "pan_card_image": panCardImage,
+    "pan_card_verify": panCardVerify,
     "gst_certificate": gstCertificate,
-    "shop_license": shopLicense,
+    "gst_certificate_verify": gstCertificateVerify,
+    "gst_number": gstNumber,
+    "business_image": businessImage == null ? [] : List<dynamic>.from(businessImage!.map((x) => x.toJson())),
     "business_logo": businessLogo,
     "weekly_off_day": weeklyOffDay?.toIso8601String(),
     "vendor": vendor?.toJson(),
@@ -170,10 +174,6 @@ class Data {
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
-    "business_image": businessImage == null ? [] : List<dynamic>.from(businessImage!.map((x) => x.toJson())),
-    "business_register": businessRegister,
-    "gst_number": gstNumber,
-    "state": state,
   };
 }
 

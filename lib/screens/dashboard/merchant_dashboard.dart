@@ -3,6 +3,7 @@ import 'package:market_place_app/bloc/business_registration/fetch_business_detai
 import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_bloc.dart';
 import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_event.dart';
 import 'package:market_place_app/screens/payment_approval_request/payment_approval_request.dart';
+import 'package:market_place_app/screens/profile_and_settings/profile_and_settings.dart';
 import 'package:market_place_app/utils/exports.dart';
 import 'package:upgrader/upgrader.dart';
 import '../my_offers/my_offers_list.dart';

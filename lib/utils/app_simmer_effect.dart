@@ -6,8 +6,8 @@ Widget profileSimmerLoading() {
   return Padding(
     padding: const EdgeInsets.all(16.0),
     child: Shimmer.fromColors(
-      baseColor: AppColors.theme20,
-      highlightColor: AppColors.theme1,
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -15,9 +15,11 @@ Widget profileSimmerLoading() {
           Container(
               width: size.width,
               height: size.height * 0.12,
-              margin: EdgeInsets.symmetric(horizontal: size.width*0.01),
-              decoration:
-                  BoxDecoration(shape: BoxShape.rectangle, color: Colors.white,borderRadius: BorderRadius.circular(10))),
+              margin: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10))),
           SizedBox(height: size.height * 0.02),
           ...List.generate(15, (index) => shimmerListTile(size)),
         ],
@@ -63,6 +65,7 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return SizedBox();
   }
+
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
@@ -76,81 +79,77 @@ Widget dashboardSimmerLoading(BuildContext context,
     appBar: forHomePage
         ? MyCustomAppBar()
         : AppBar(
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
-          child: CircleAvatar(radius: 20),
-        ),
-      ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          shimmerText(width: 100, height: 16),
-          SizedBox(height: 5),
-          shimmerText(width: 80, height: 12),
-        ],
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 15),
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: CircleAvatar(radius: 20),
-          ),
-        )
-      ],
-    ),
-    body: gradientBg(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: size.height * 0.01),
-              MasonryGridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(5),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  double height =
-                  index % 2 == 0 ? size.height * 0.12 : size.height * 0.08;
-                  return shimmerCard(height: height);
-                },
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: CircleAvatar(radius: 20),
               ),
-              SizedBox(height: size.height * 0.02),
-              ListView.separated(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(5),
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 10,
-                  separatorBuilder: (_, __) => SizedBox(height: 10),
-                  itemBuilder: (_, __) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      shimmerButton(width: size.width * 0.8, height: 45),
-                      SizedBox(height: size.height * 0.02),
-                      shimmerText(width: 150, height: 16),
-                      SizedBox(height: 8),
-                    ],
-                  )),
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                shimmerText(width: 100, height: 16),
+                SizedBox(height: 5),
+                shimmerText(width: 80, height: 12),
+              ],
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: CircleAvatar(radius: 20),
+                ),
+              )
             ],
           ),
+    body: SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: size.height * 0.01),
+            GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, mainAxisSpacing: 12, crossAxisSpacing: 12),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(5),
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                double height =
+                    index % 2 == 0 ? size.height * 0.12 : size.height * 0.08;
+                return shimmerCard(height: height);
+              },
+            ),
+            SizedBox(height: size.height * 0.02),
+            ListView.separated(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(5),
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: 10,
+              separatorBuilder: (_, __) => SizedBox(height: 10),
+              itemBuilder: (_, __) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  shimmerButton(width: size.width * 0.8, height: 45),
+                  SizedBox(height: size.height * 0.02),
+                  shimmerText(width: 150, height: 16),
+                  SizedBox(height: 8),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     ),
   );
 }
-
-
 
 /// notifications simmer
 
@@ -161,14 +160,14 @@ Widget notificationShimmerLoading() => ListView.separated(
     itemCount: 10,
     separatorBuilder: (_, __) => SizedBox(height: 10),
     itemBuilder: (_, __) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        shimmerButton(width: size.width * 0.9, height: 45),
-        SizedBox(height: size.height * 0.02),
-        shimmerText(width: 150, height: 16),
-        SizedBox(height: 8),
-      ],
-    ));
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            shimmerButton(width: size.width * 0.9, height: 45),
+            SizedBox(height: size.height * 0.02),
+            shimmerText(width: 150, height: 16),
+            SizedBox(height: 8),
+          ],
+        ));
 Widget shimmerText({required double width, required double height}) {
   return Shimmer.fromColors(
     baseColor: Colors.grey.shade300,
@@ -200,8 +199,8 @@ Widget shimmerCard({required double height}) {
 
 Widget shimmerButton({required double width, required double height}) {
   return Shimmer.fromColors(
-    baseColor: AppColors.theme20,
-    highlightColor: AppColors.theme1,
+    baseColor: Colors.grey.shade300,
+    highlightColor: Colors.grey.shade100,
     child: Container(
       width: width,
       height: height,

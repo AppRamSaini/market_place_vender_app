@@ -43,7 +43,7 @@ class AuthRepository {
   }
 
   /// merchant registration
-  Future<MerchantBusinessModel?> merchantRegistration(
+  Future merchantRegistration(
       {required BuildContext context,
       required MerchantRegistrationModel merchant}) async {
     var data = {
@@ -61,8 +61,8 @@ class AuthRepository {
       "long": merchant.long,
       "address": merchant.address,
       "email": merchant.email,
-      "adhar_front": merchant.aadhaarFront,
-      "adhar_back": merchant.aadhaarBack,
+      "aadhaar_front": merchant.aadhaarFront,
+      "aadhaar_back": merchant.aadhaarBack,
       "pan_card_image": merchant.panImage,
       "gst_certificate": merchant.gstCertificate,
       "gst_number": merchant.gstNumber,
@@ -79,8 +79,7 @@ class AuthRepository {
         await api.post(url: ApiEndPoints.merchantRegistration, data: data);
     print('--------->>>>>>$result');
     if (result is String) {
-      snackBar(context, result, AppColors.redColor);
-      return null;
+      return result;
     } else {
       return MerchantBusinessModel.fromJson(result);
     }
@@ -99,14 +98,15 @@ class AuthRepository {
       "subcategory": merchant.subCategory,
       "name": merchant.name,
       "state": merchant.state,
+      "country": merchant.country,
       "phone": merchant.mobile,
       "role": "vendor",
       "lat": merchant.lat,
       "long": merchant.long,
       "address": merchant.address,
       "email": merchant.email,
-      "adhar_front": merchant.aadhaarFront,
-      "adhar_back": merchant.aadhaarBack,
+      "aadhaar_front": merchant.aadhaarFront,
+      "aadhaar_back": merchant.aadhaarBack,
       "pan_card_image": merchant.panImage,
       "gst_certificate": merchant.gstCertificate,
       "gst_number": merchant.gstNumber,
@@ -116,11 +116,9 @@ class AuthRepository {
       "business_image": merchant.businessImages,
       "opening_hours": merchant.openingHours
     };
-    print('data--------->>>>>>$data');
-
+    print('JSON===>>>$data');
     final result =
-        await api.post(url: ApiEndPoints.updateMerchantBusiness, data: data);
-    print('--------->>>>>>$result');
+        await api.post(url: ApiEndPoints.updateMerchantBusiness, data: data,context: context);
     if (result is String) {
       snackBar(context, result, AppColors.redColor);
       return null;
@@ -151,12 +149,9 @@ class AuthRepository {
   }
 
   /// fetch business profile data
-  Future fetchBusinessProfile() async {
-    final vendorId =  LocalStorage.getString(Pref.vendorId);
-
-    print("-------->>>$vendorId");
+  Future fetchBusinessProfile(BuildContext context) async {
     final result =
-        await api.get(url: "${ApiEndPoints.fetchBusinessProfile}/68dd0a8dff3000e5dfe82f44");
+        await api.get(url: ApiEndPoints.fetchBusinessProfile,context: context);
     if (result is String) {
       return result;
     } else {

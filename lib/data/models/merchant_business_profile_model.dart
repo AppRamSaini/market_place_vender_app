@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final merchantBusinessProfileModel = merchantBusinessProfileModelFromJson(jsonString);
-
 import 'dart:convert';
 
 MerchantBusinessProfileModel merchantBusinessProfileModelFromJson(String str) => MerchantBusinessProfileModel.fromJson(json.decode(str));
@@ -89,20 +85,24 @@ class BusinessDetails {
   Category? category;
   Subcategory? subcategory;
   String? businessRegister;
+  String? gstNumber;
   String? address;
   String? city;
   String? area;
   int? pincode;
   double? lat;
   double? long;
-  dynamic businessImage;
+  List<BusinessImage>? businessImage;
   String? state;
+  String? email;
+  String? country;
 
   BusinessDetails({
     this.businessName,
     this.category,
     this.subcategory,
     this.businessRegister,
+    this.gstNumber,
     this.address,
     this.city,
     this.area,
@@ -111,6 +111,8 @@ class BusinessDetails {
     this.long,
     this.businessImage,
     this.state,
+    this.email,
+    this.country,
   });
 
   factory BusinessDetails.fromJson(Map<String, dynamic> json) => BusinessDetails(
@@ -118,14 +120,17 @@ class BusinessDetails {
     category: json["category"] == null ? null : Category.fromJson(json["category"]),
     subcategory: json["subcategory"] == null ? null : Subcategory.fromJson(json["subcategory"]),
     businessRegister: json["business_register"],
+    gstNumber: json["gst_number"],
     address: json["address"],
     city: json["city"],
     area: json["area"],
     pincode: json["pincode"],
     lat: json["lat"]?.toDouble(),
     long: json["long"]?.toDouble(),
-    businessImage: json["business_image"],
+    businessImage: json["business_image"] == null ? [] : List<BusinessImage>.from(json["business_image"]!.map((x) => BusinessImage.fromJson(x))),
     state: json["state"],
+    email: json["email"],
+    country: json["country"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -133,14 +138,37 @@ class BusinessDetails {
     "category": category?.toJson(),
     "subcategory": subcategory?.toJson(),
     "business_register": businessRegister,
+    "gst_number": gstNumber,
     "address": address,
     "city": city,
     "area": area,
     "pincode": pincode,
     "lat": lat,
     "long": long,
-    "business_image": businessImage,
+    "business_image": businessImage == null ? [] : List<dynamic>.from(businessImage!.map((x) => x.toJson())),
     "state": state,
+    "email": email,
+    "country": country,
+  };
+}
+
+class BusinessImage {
+  String? url;
+  String? filename;
+
+  BusinessImage({
+    this.url,
+    this.filename,
+  });
+
+  factory BusinessImage.fromJson(Map<String, dynamic> json) => BusinessImage(
+    url: json["url"],
+    filename: json["filename"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "url": url,
+    "filename": filename,
   };
 }
 
@@ -198,43 +226,43 @@ class Subcategory {
 
 class Document {
   String? businessLogo;
-  String? adharFront;
-  String? adharBack;
+  String? aadhaarFront;
+  String? aadhaarBack;
   String? panCardImage;
   String? gstCertificate;
-  bool? adharVerify;
-  bool? panCardVerify;
-  bool? gstCertificateVerify;
+  String? aadhaarVerify;
+  String? panCardVerify;
+  String? gstCertificateVerify;
 
   Document({
     this.businessLogo,
-    this.adharFront,
-    this.adharBack,
+    this.aadhaarFront,
+    this.aadhaarBack,
     this.panCardImage,
     this.gstCertificate,
-    this.adharVerify,
+    this.aadhaarVerify,
     this.panCardVerify,
     this.gstCertificateVerify,
   });
 
   factory Document.fromJson(Map<String, dynamic> json) => Document(
     businessLogo: json["business_logo"],
-    adharFront: json["adhar_front"],
-    adharBack: json["adhar_back"],
+    aadhaarFront: json["aadhaar_front"],
+    aadhaarBack: json["aadhaar_back"],
     panCardImage: json["pan_card_image"],
     gstCertificate: json["gst_certificate"],
-    adharVerify: json["adhar_verify"],
+    aadhaarVerify: json["aadhaar_verify"],
     panCardVerify: json["pan_card_verify"],
     gstCertificateVerify: json["gst_certificate_verify"],
   );
 
   Map<String, dynamic> toJson() => {
     "business_logo": businessLogo,
-    "adhar_front": adharFront,
-    "adhar_back": adharBack,
+    "aadhaar_front": aadhaarFront,
+    "aadhaar_back": aadhaarBack,
     "pan_card_image": panCardImage,
     "gst_certificate": gstCertificate,
-    "adhar_verify": adharVerify,
+    "aadhaar_verify": aadhaarVerify,
     "pan_card_verify": panCardVerify,
     "gst_certificate_verify": gstCertificateVerify,
   };
@@ -362,6 +390,7 @@ class Vendor {
   DateTime? createdAt;
   DateTime? updatedAt;
   int? v;
+  String? email;
 
   Vendor({
     this.id,
@@ -373,6 +402,7 @@ class Vendor {
     this.createdAt,
     this.updatedAt,
     this.v,
+    this.email,
   });
 
   factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
@@ -385,6 +415,7 @@ class Vendor {
     createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     v: json["__v"],
+    email: json["email"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -397,5 +428,6 @@ class Vendor {
     "createdAt": createdAt?.toIso8601String(),
     "updatedAt": updatedAt?.toIso8601String(),
     "__v": v,
+    "email": email,
   };
 }

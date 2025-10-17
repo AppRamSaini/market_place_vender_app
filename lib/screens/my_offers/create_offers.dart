@@ -26,23 +26,58 @@ class _CreateOffersState extends State<CreateOffers> {
   @override
   void initState() {
     super.initState();
-    if(widget.forUpdate){
+    if (widget.forUpdate) {
       setData();
     }
   }
 
-  setData() {
-    titleController.text = widget.data!.title ?? '';
-    descriptionController.text = widget.data!.description ?? '';
-    minBillController.text = widget.data!.minBillAmount.toString() ?? '';
-    offersAmtController.text = widget.data!.amount.toString() ?? '';
-    maxAmtController.text = widget.data!.maxDiscountCap.toString() ?? '';
-    expiryDate = DateFormat('yyyy-MM-dd').format(widget.data!.expiryDate!);
-    formattedDate = DateFormat('dd MMMM yy').format(widget.data!.expiryDate!);
-    validDateController?.text = formattedDate!;
-    selectedDiscount =
-        "${widget.data!.discountPercentage.toString()}% OFF" ?? '';
-    setState(() {});
+  void setData() {
+    if (widget.data != null) {
+      selectedOfferType = widget.data!.type!.toString() ?? '';
+      if (widget.data!.flat != null) {
+        titleController.text = widget.data!.flat!.title ?? '';
+        descriptionController.text = widget.data!.flat!.description ?? '';
+        minBillController.text =
+            widget.data!.flat!.minBillAmount?.toString() ?? '';
+        offersAmtController.text = widget.data!.flat!.amount?.toString() ?? '';
+        maxAmtController.text =
+            widget.data!.flat!.maxDiscountCap?.toString() ?? '';
+        offerImageUrl = widget.data!.flat!.offerImage?.toString() ?? '';
+
+        if (widget.data!.flat!.expiryDate != null) {
+          expiryDate =
+              DateFormat('yyyy-MM-dd').format(widget.data!.flat!.expiryDate!);
+          formattedDate =
+              DateFormat('dd MMMM yy').format(widget.data!.flat!.expiryDate!);
+          validDateController?.text = formattedDate!;
+        }
+        selectedDiscount =
+            "${widget.data!.flat!.discountPercentage?.toString() ?? ''}% OFF";
+      }
+
+      // Agar percentage offer available hai
+      if (widget.data!.percentage != null) {
+        titleController.text = widget.data!.percentage!.title ?? '';
+        descriptionController.text = widget.data!.percentage!.description ?? '';
+        minBillController.text =
+            widget.data!.percentage!.minBillAmount?.toString() ?? '';
+        offersAmtController.text =
+            widget.data!.percentage!.amount?.toString() ?? '';
+        maxAmtController.text =
+            widget.data!.percentage!.maxDiscountCap?.toString() ?? '';
+        offerImageUrl = widget.data!.percentage!.offerImage?.toString() ?? '';
+
+        if (widget.data!.percentage!.expiryDate != null) {
+          expiryDate = DateFormat('yyyy-MM-dd')
+              .format(widget.data!.percentage!.expiryDate!);
+          formattedDate = DateFormat('dd MMMM yy')
+              .format(widget.data!.percentage!.expiryDate!);
+          validDateController?.text = formattedDate!;
+        }
+        selectedDiscount =
+            "${widget.data!.percentage!.discountPercentage?.toString() ?? ''}% OFF";
+      }
+    }
   }
 
   @override
@@ -59,6 +94,8 @@ class _CreateOffersState extends State<CreateOffers> {
   DateTime selectedDate = DateTime.now();
   String? expiryDate;
   String? formattedDate;
+  XFile? offerImage;
+  String? offerImageUrl;
 
   void updateDate() async {
     final DateTime? picked = await showDatePicker(
@@ -79,6 +116,7 @@ class _CreateOffersState extends State<CreateOffers> {
   }
 
   String? selectedDiscount;
+  String? selectedOfferType;
 
   @override
   Widget build(BuildContext context) {
@@ -125,15 +163,31 @@ class _CreateOffersState extends State<CreateOffers> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Title", style: AppStyle.medium_16(AppColors.black20)),
+                  Text("Upload OFFER Image",
+                      style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  uploadDocumentsWidget(
+                    docImage: offerImageUrl,
+                    onTap: () async {
+                      final picked = await pickDocumentsWidget(context);
+                      if (picked != null) {
+                        setState(() => offerImage = picked);
+                      }
+                    },
+                    txt: "Upload OFFER Image",
+                    file: offerImage,
+                  ),
+                  SizedBox(height: size.height * 0.02),
+                  Text("Offer Title",
+                      style: AppStyle.medium_16(AppColors.black20)),
+                  SizedBox(height: size.height * 0.01),
+                  customTextField(
                       keyboardType: TextInputType.text,
-                      hintText: 'Offers title',
+                      hintText: 'Offer title',
                       controller: titleController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please offers title';
+                          return 'Please offer title';
                         }
                         return null;
                       }),
@@ -141,11 +195,49 @@ class _CreateOffersState extends State<CreateOffers> {
                   Text("Description(optional)",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       maxLines: 3,
                       minLines: 1,
                       hintText: 'Describe your offers here...',
                       controller: descriptionController),
+                  SizedBox(height: size.height * 0.02),
+                  Text("Offer Type",
+                      style: AppStyle.medium_16(AppColors.black20)),
+                  SizedBox(height: size.height * 0.01),
+                  DropdownButton2<String>(
+                    underline: Container(color: Colors.transparent),
+                    isExpanded: true,
+                    value: selectedOfferType,
+                    barrierColor: AppColors.theme5,
+                    hint: Text('Select offer type',
+                        style: AppStyle.normal_16(AppColors.black20)),
+                    items: offerTypeList
+                        .map((item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(item.toString().toUpperCase(),
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.black))))
+                        .toList(),
+                    onChanged: (value) =>
+                        setState(() => selectedOfferType = value),
+                    iconStyleData: const IconStyleData(
+                        icon: Padding(
+                            padding: EdgeInsets.only(right: 5),
+                            child: Icon(Icons.keyboard_arrow_down,
+                                color: Colors.black45)),
+                        iconSize: 24),
+                    buttonStyleData: ButtonStyleData(
+                        decoration: BoxDecoration(
+                            color: AppColors.theme5,
+                            borderRadius: BorderRadius.circular(10))),
+                    dropdownStyleData: DropdownStyleData(
+                        maxHeight: MediaQuery.sizeOf(context).height / 2,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10))),
+                    menuItemStyleData: const MenuItemStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                  ),
                   SizedBox(height: size.height * 0.02),
                   Text("Discount % OFF",
                       style: AppStyle.medium_16(AppColors.black20)),
@@ -188,7 +280,7 @@ class _CreateOffersState extends State<CreateOffers> {
                   Text("Min Bill Amount",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       prefix: Icon(Icons.currency_rupee, size: 18),
                       keyboardType: TextInputType.number,
                       maxLength: 10,
@@ -205,7 +297,7 @@ class _CreateOffersState extends State<CreateOffers> {
                   Text("Offer Amount",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       prefix: Icon(Icons.currency_rupee, size: 18),
                       keyboardType: TextInputType.number,
                       maxLength: 10,
@@ -222,7 +314,7 @@ class _CreateOffersState extends State<CreateOffers> {
                   Text("Maximum Discount",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       prefix: Icon(Icons.currency_rupee, size: 18),
                       keyboardType: TextInputType.number,
                       maxLength: 10,
@@ -239,7 +331,7 @@ class _CreateOffersState extends State<CreateOffers> {
                   Text("Valid Till",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       readOnly: true,
                       showPrefix: false,
                       hintText: 'Select offers valid date',
@@ -268,7 +360,8 @@ class _CreateOffersState extends State<CreateOffers> {
                           maxAmtController.text.toString(),
                           minBillController.text.toString(),
                           offersAmtController.text.toString(),
-                          "");
+                          "https://mediabrief.com/wp-content/uploads/2021/11/IMAGE-Woovlys-Black-Friday-Sale-offers-FLAT-50-off-MEDIABRIEF.png",
+                          selectedOfferType);
                       if (_formKey.currentState!.validate()) {
                         if (widget.forUpdate) {
                           context.read<UpdateOffersBloc>().add(
@@ -303,3 +396,4 @@ List<String> categoryList = [
   "60% OFF",
   "70% OFF",
 ];
+List<String> offerTypeList = ["flat", "percentage"];

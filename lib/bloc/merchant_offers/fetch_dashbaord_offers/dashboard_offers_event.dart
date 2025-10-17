@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 
-abstract class FetchOffersEvent {}
+abstract class FetchDashboardOffersEvent {}
 
-class GetOffersEvent extends FetchOffersEvent {
+class DashboardOffersEvent extends FetchDashboardOffersEvent {
   final BuildContext context;
-  GetOffersEvent({required this.context});
+  DashboardOffersEvent({required this.context});
 }
 
-class ResetOffersEvent extends FetchOffersEvent {}
+class ResetOffersEvent extends FetchDashboardOffersEvent {}

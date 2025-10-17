@@ -2,31 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
+import 'package:market_place_app/bloc/business_registration/create_business/business_registration_event.dart';
 import 'package:market_place_app/main.dart';
 import 'package:market_place_app/utils/app_assets.dart';
 import 'package:market_place_app/utils/app_colors.dart';
 import 'package:market_place_app/utils/app_styles.dart';
-
-/// gradient background color widget
-Widget gradientBg({Widget? child}) => Container(
-    height: size.height,
-    width: size.width,
-    // decoration: BoxDecoration(
-    //     gradient: LinearGradient(
-    //
-    //         colors: [AppColors.themeColor, AppColors.blackColor],
-    //         begin: Alignment.topCenter,
-    //         end: Alignment.bottomCenter)),
-    child: child);
-
-/// bg background widget
-Widget bgWidget({Widget? child}) => Container(
-    width: size.width,
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.redColor, width: 0.5),
-        color: AppColors.whiteColor.withOpacity(0.1)),
-    child: child);
 
 /// custom divider
 Widget customDivider() => Divider(
@@ -163,10 +143,54 @@ EdgeInsetsGeometry globalBottomPadding(BuildContext context) =>
 
 
 
-/// 24h converter
+/// 24H converter
 String convertTo24Hour(String time12h) {
   DateTime tempDate = DateFormat("hh:mm aaa").parse(time12h);
   String formattedDate = DateFormat('HH:mm').format(tempDate);
   print('formattedDate = $formattedDate');
   return formattedDate;
+}
+
+/// 12H converter
+String convertTo12Hour(String? time24) {
+  if (time24 == null || time24.isEmpty) return "";
+  try {
+    final time = DateFormat("HH:mm").parse(time24);
+    return DateFormat("hh:mm a").format(time);
+  } catch (e) {
+    return time24;
+
+  }
+}
+
+/// time format management
+String formatTimeManagement(OpeningHour hour, {bool isOpen = true}) {
+  if (hour.active == false) {
+    return "Closed";
+  }
+
+  final value = isOpen ? hour.open : hour.close;
+
+  if (value == null || value.isEmpty) {
+    return "00:00";
+  }
+  try {
+    final time = DateFormat("HH:mm a").parse(value);
+    return DateFormat("hh:mm a").format(time); // 12h format
+  } catch (e) {
+    return value;
+  }
+}
+
+
+TimeOfDay timeOfDayFromString(String timeStr) {
+  final format = DateFormat("hh:mm a");
+  final date = format.parse(timeStr);
+  return TimeOfDay(hour: date.hour, minute: date.minute);
+}
+
+String formatTimeOfDay(TimeOfDay time) {
+  final now = DateTime.now();
+  final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+  return DateFormat("hh:mm a").format(dt);
 }

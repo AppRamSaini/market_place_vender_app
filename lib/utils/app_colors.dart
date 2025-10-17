@@ -10,7 +10,6 @@ class AppColors{
   static  Color theme5 = Color(0xFF004AAD).withOpacity(0.05);
   static  Color theme1 = Color(0xFF004AAD).withOpacity(0.01);
 
-  static const themeColor1 = Color(0xFFE14A1B);
   static const grey50 = Color(0xFFF5F5F5);
   static const blackColor = Color(0xFF000000);
   static Color black20 = Color(0xFF000000);

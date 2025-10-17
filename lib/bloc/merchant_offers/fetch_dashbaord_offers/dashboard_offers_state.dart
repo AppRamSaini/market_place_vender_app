@@ -1,21 +1,19 @@
-import 'package:market_place_app/data/models/fetchoffers_model.dart';
-import 'package:market_place_app/data/models/user_profile_model.dart';
+import 'package:market_place_app/data/models/merchant_dashboard_model.dart';
 
-abstract class FetchOffersState {}
+abstract class FetchDashboardOffersState {}
 
-class FetchOffersInitial extends FetchOffersState {}
+class FetchDashboardOffersInitial extends FetchDashboardOffersState {}
 
-class FetchOffersLoading extends FetchOffersState {}
+class FetchDashboardOffersLoading extends FetchDashboardOffersState {}
 
-class FetchOffersSuccess extends FetchOffersState {
-  final FetchOffersListModel fetchOffersListModel;
-  FetchOffersSuccess({required this.fetchOffersListModel});
+class FetchDashboardOffersSuccess extends FetchDashboardOffersState {
+  final MerchantDashboardModel merchantDashboardModel;
+  FetchDashboardOffersSuccess({required this.merchantDashboardModel});
 }
-class FetchOffersFailure extends FetchOffersState {
+
+class FetchDashboardOffersFailure extends FetchDashboardOffersState {
   final String error;
-  FetchOffersFailure({required this.error});
+  FetchDashboardOffersFailure({required this.error});
 }
 
-
-class FetchOffersInvalidResult extends FetchOffersState {}
-
+class FetchDashboardOffersInvalidResult extends FetchDashboardOffersState {}

@@ -62,7 +62,7 @@ void logOutPermissionDialog(BuildContext context, {bool forDelete = false}) =>
                           Navigator.pop(context);
                           Future.delayed(Duration(seconds: 2), () {
                             EasyLoading.dismiss();
-                            LocalStorage.clear(context);
+                            LocalStorage.clearAll(context);
                           });
                         },
                         child: Text(
@@ -82,7 +82,7 @@ void logOutPermissionDialog(BuildContext context, {bool forDelete = false}) =>
 
 /// LOG OUT DIALOG
 void deleteOffersDialog(
-    {required BuildContext context,
+        {required BuildContext context,
         void Function()? onPressed,
         String? deleteText}) =>
     showDialog(
@@ -148,37 +148,42 @@ void deleteOffersDialog(
 
 /// session expire dialog
 
-
 void sessionExpiredDialog(BuildContext context) {
   showGeneralDialog(
     barrierDismissible: false,
     barrierLabel: "Session Expired",
     context: context,
     pageBuilder: (ctx, anim1, anim2) {
-      return const SizedBox.shrink(); // actual widget built in transitionBuilder
+      return const SizedBox.shrink();
     },
     transitionBuilder: (ctx, anim1, anim2, child) {
-      return Transform.scale(
-        scale: anim1.value,
-        child: Opacity(
-          opacity: anim1.value,
-          child: Dialog(
-            backgroundColor: Colors.white,
-            shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(color: AppColors.themeColor),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Your session has expired. Please login again.',
-                    style: AppStyle.medium_16(AppColors.blackColor),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+      return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: Transform.scale(
+          scale: anim1.value,
+          child: Opacity(
+            opacity: anim1.value,
+            child: Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator.adaptive(
+                        backgroundColor: AppColors.themeColor),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Your session has expired. Please login again.',
+                      style: AppStyle.medium_16(AppColors.blackColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -187,14 +192,66 @@ void sessionExpiredDialog(BuildContext context) {
     },
     transitionDuration: const Duration(milliseconds: 500),
   );
-
   // Auto redirect after 3 seconds
   Timer(const Duration(seconds: 3), () {
-    // Navigator.of(context, rootNavigator: true).pop(); // close dialog
-    // LocalStorage.clearAll(); // clear all stored data
-    //
-    // AppRouter().navigateToAndRemoveAll(context, LoginScreen());
+    Navigator.of(context, rootNavigator: true).pop();
+    EasyLoading.show();
+    Future.delayed(Duration(seconds: 2), () {
+      EasyLoading.dismiss();
+      LocalStorage.clearAll(context);
+    });
   });
 }
 
-
+/// exit page dialog
+Future exitPageDialog(BuildContext context) async {
+  await showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(5))),
+    builder: (_) => Padding(
+      padding: const EdgeInsets.only(left: 12, right: 12, bottom: 10),
+      child: SizedBox(
+        width: size.width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("EXIT PAGE CONFIRMATION",
+                    style: AppStyle.medium_16(AppColors.blackColor)),
+                IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.clear,
+                      color: AppColors.blackColor,
+                    ))
+              ],
+            ),
+            customDivider(),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                CustomButton(
+                  bgColor: AppColors.themeColor,
+                  txtColor: AppColors.whiteColor,
+                  onPressed: () => Navigator.pop(context),
+                  txt: "CANCEL",
+                ),
+                CustomButton(
+                  bgColor: AppColors.themeColor,
+                  txtColor: AppColors.whiteColor,
+                  onPressed: () async {},
+                  txt: "EXIT",
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+// utils/validators.dart

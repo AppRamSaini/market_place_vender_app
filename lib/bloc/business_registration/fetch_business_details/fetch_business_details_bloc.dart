@@ -10,7 +10,7 @@ class FetchBusinessDetailsBloc extends Bloc<FetchBusinessDetailsEvent, FetchBusi
     on<FetchBusinessDetailsDetailsEvent>((event, emit) async {
       emit(FetchBusinessDetailsLoading());
       try {
-        final businessProfile = await repo.fetchBusinessProfile();
+        final businessProfile = await repo.fetchBusinessProfile(event.context);
         if (businessProfile is String) {
           snackBar(event.context, businessProfile.toString());
         } else {

@@ -22,10 +22,12 @@ class _SplashScreenState extends State<SplashScreen> {
     // Get stored token and role
     String? token = LocalStorage.getString(Pref.token);
     String? role = LocalStorage.getString(Pref.roleType);
+    String? vendorId = LocalStorage.getString(Pref.vendorId);
 
     // Optional: debug prints
     print('TOKEN==>>$token');
     print('ROLE==>>$role');
+    print('Vendor ID==>>$vendorId');
 
     // Navigate after 2.5 seconds
     Future.delayed(const Duration(milliseconds: 2500), () {

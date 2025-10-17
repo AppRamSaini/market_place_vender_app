@@ -77,11 +77,11 @@ class OtpVerifyState extends State<OtpVerify> {
                   final token = state.userOtpModel.data!.token.toString();
                   await LocalStorage.setString(Pref.token, token);
                 }
-                if (state.userOtpModel.data!.user != null && role=='vendor') {
-                  final userId = state.userOtpModel.data!.user!.id.toString();
-                  await LocalStorage.setString(Pref.vendorId, userId);
-                }
                 await LocalStorage.setString(Pref.roleType, role);
+                // if (state.userOtpModel.data!.user != null && role=='vendor') {
+                //   final userId = state.userOtpModel.data!.user!.id.toString();
+                //   await LocalStorage.setString(Pref.vendorId, userId);
+                // }
                 if (role == 'vendor' && state.userOtpModel.data!.user != null) {
                   AppRouter()
                       .navigateAndClearStack(context, MerchantDashboard());

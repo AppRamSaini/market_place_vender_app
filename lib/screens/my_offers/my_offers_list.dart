@@ -1,30 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:market_place_app/bloc/merchant_offers/delete_offers/delete_offers_bloc.dart';
-import 'package:market_place_app/bloc/merchant_offers/delete_offers/delete_offers_event.dart';
-import 'package:market_place_app/bloc/merchant_offers/delete_offers/delete_offers_state.dart';
-import 'package:market_place_app/bloc/merchant_offers/disable_offers/disable_offers_bloc.dart';
-import 'package:market_place_app/bloc/merchant_offers/disable_offers/disable_offers_event.dart';
-import 'package:market_place_app/bloc/merchant_offers/disable_offers/disable_offers_state.dart';
-import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_bloc.dart';
-import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_event.dart';
-import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_state.dart';
-import 'package:market_place_app/bloc/merchant_offers/update_offers/update_offers_bloc.dart';
-import 'package:market_place_app/bloc/merchant_offers/update_offers/update_offers_state.dart';
-import 'package:market_place_app/bloc/merchant_offers/view_offers_details/view_offers_bloc.dart';
-import 'package:market_place_app/bloc/merchant_offers/view_offers_details/view_offers_event.dart';
-import 'package:market_place_app/data/models/fetchoffers_model.dart';
-import 'package:market_place_app/screens/my_offers/create_offers.dart';
-import 'package:market_place_app/screens/my_offers/view_offers_details.dart';
-import 'package:market_place_app/screens/settings/dialogs.dart';
-import 'package:market_place_app/utils/app_assets.dart';
-import 'package:market_place_app/utils/app_colors.dart';
-import 'package:market_place_app/utils/custom_appbar.dart';
-import 'package:ticket_widget/ticket_widget.dart';
 
+import 'package:market_place_app/bloc/merchant_offers/delete_offers/delete_offers_event.dart';
+import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_event.dart';
+
+import '../../bloc/merchant_offers/disable_offers/disable_offers_event.dart';
+import '../../bloc/merchant_offers/view_offers_details/view_offers_event.dart';
 import '../../utils/exports.dart';
 
-class MyOffersList extends StatelessWidget {
+class MyOffersList extends StatefulWidget {
   const MyOffersList({super.key});
+
+  @override
+  State<MyOffersList> createState() => _MyOffersListState();
+}
+
+class _MyOffersListState extends State<MyOffersList> {
+  @override
+  void initState() {
+    super.initState();
+    refreshData(context);
+  }
 
   Future refreshData(BuildContext context) async {
     context.read<FetchOffersBloc>().add(GetOffersEvent(context: context));
@@ -55,7 +49,7 @@ class MyOffersList extends StatelessWidget {
                 refreshData(context);
               } else if (state is DeleteOffersInvalidResult) {
                 EasyLoading.dismiss();
-              }else{
+              } else {
                 EasyLoading.dismiss();
               }
             },
@@ -142,10 +136,11 @@ class MyOffersList extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               child: TicketWidget(
                                 width: size.width,
-                                height: size.height * 0.15,
+                                height: size.height * 0.16,
                                 color: AppColors.theme5,
                                 isCornerRounded: false,
-                                padding: EdgeInsets.all(12),
+                                padding: EdgeInsets.only(top: size.height*0.02,right: size.width*0.03,left: size.width*0.03
+                                ),
                                 child: TicketData(data: offersList[index]),
                               ),
                             ),
@@ -177,48 +172,67 @@ class TicketData extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: FadeInImage(
-                    height: size.height * 0.08,
-                    width: size.height * 0.08,
-                    fit: BoxFit.cover,
-                    placeholder: AssetImage(Assets.redeemOffers),
-                    image: NetworkImage(data!.offerImage ?? ''),
-                    imageErrorBuilder: (_, child, st) =>
-                        Image.asset(Assets.assign))),
-            SizedBox(width: size.width * 0.03),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                        "Flat ${data!.discountPercentage.toString() ?? ''}% OFF",
-                        style: AppStyle.semiBold_18(AppColors.blackColor)),
-                    data!.status != 'active'
-                        ? Icon(Icons.do_disturb_alt_outlined,
-                            color: AppColors.redColor)
-                        : SizedBox()
-                  ],
-                ),
-                Text('on orders above ₹${data!.minBillAmount ?? ''}',
-                    style: AppStyle.normal_14(AppColors.black20)),
-                Text(data!.title ?? '',
-                    style: AppStyle.medium_16(AppColors.blackColor)),
-                Text(
-                    'Max. Dis. ₹${data!.maxDiscountCap ?? ''}  Min. Bill ₹${data!.minBillAmount ?? ''} ',
-                    style: AppStyle.normal_12(AppColors.black20)),
-              ],
-            )
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...[
+                if (data?.flat != null) data!.flat!,
+                if (data?.percentage != null) data!.percentage!,
+              ].map((offer) => offerItem(size, offer, data!.status)),
+            ],
+          ),
         ),
         popMenusForOffers(context: context, data: data),
       ],
     );
   }
+}
+
+Widget offerItem(Size size, dynamic offer, String? status) {
+  return Row(
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(100),
+        child: FadeInImage(
+          height: size.height * 0.08,
+          width: size.height * 0.08,
+          fit: BoxFit.cover,
+          placeholder: AssetImage(Assets.redeemOffers),
+          image: NetworkImage(offer.offerImage ?? ''),
+          imageErrorBuilder: (_, __, ___) => Image.asset(Assets.dummy,fit: BoxFit.cover)
+        ),
+      ),
+      SizedBox(width: size.width * 0.03),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                "Flat ${offer.discountPercentage ?? ''}% OFF",
+                style: AppStyle.semiBold_18(AppColors.blackColor),
+              ),
+              if (status != 'active')
+                Icon(Icons.do_disturb_alt_outlined, color: AppColors.redColor),
+            ],
+          ),
+          Text(
+            'on orders above ₹${offer.minBillAmount ?? ''}',
+            style: AppStyle.normal_14(AppColors.black20),
+          ),
+          Text(
+            offer.title ?? '',
+            style: AppStyle.medium_16(AppColors.blackColor),
+          ),
+          Text(
+            'Max. Dis. ₹${offer.maxDiscountCap ?? ''}  Min. Bill ₹${offer.minBillAmount ?? ''}',
+            style: AppStyle.normal_12(AppColors.black20),
+          ),
+        ],
+      ),
+    ],
+  );
 }
 
 Widget popMenusForOffers(
@@ -280,11 +294,15 @@ Widget popMenusForOffers(
           AppRouter()
               .navigateTo(context, CreateOffers(data: data, forUpdate: true));
         } else if (value['menu_id'] == 3) {
-          deleteOffersDialog(context, () {
-            Navigator.pop(context);
-            context.read<DeleteOffersBloc>().add(DeleteOffersSubmit(
-                context: context, offersId: data.id.toString()));
-          });
+          deleteOffersDialog(
+              context: context,
+              onPressed: () {
+                Navigator.pop(context);
+
+                context.read<DeleteOffersBloc>().add(DeleteOffersSubmit(
+                    context: context, offersId: data.id.toString()));
+              },
+              deleteText: "offer");
         } else if (value['menu_id'] == 4) {
           context.read<DisableOffersBloc>().add(DisableOffersSubmit(
               context: context,

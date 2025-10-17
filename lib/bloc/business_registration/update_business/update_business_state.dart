@@ -1,4 +1,3 @@
-import 'package:market_place_app/data/models/merchant_business_model.dart';
 import 'package:market_place_app/data/models/update_merchant_business_model.dart';
 
 abstract class UpdateMerchantBusinessState {}

@@ -17,7 +17,7 @@ class AddOffersModel {
   final String? maxDiscountCap;
   final String? minBillAmount;
   final String? amount;
-  final String? image;
+  final String? image;  final String? type;
 
   AddOffersModel(
     this.title,
@@ -27,6 +27,6 @@ class AddOffersModel {
     this.maxDiscountCap,
     this.minBillAmount,
     this.amount,
-    this.image
+    this.image,  this.type,
   );
 }

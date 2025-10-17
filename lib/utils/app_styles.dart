@@ -8,6 +8,10 @@ class AppStyle{
 
   static TextStyle medium_12(Color color) => TextStyle(
       color: color, fontSize: 12, fontWeight: MyFontWeight.medium);
+  static TextStyle medium_11(Color color) => TextStyle(
+      color: color, fontSize: 11, fontWeight: MyFontWeight.medium);
+  static TextStyle bold_11(Color color) => TextStyle(
+      color: color, fontSize: 11, fontWeight: MyFontWeight.bold);
 
   static TextStyle semiBold_12(Color color) => TextStyle(
       color: color, fontSize: 12, fontWeight: MyFontWeight.bold);
@@ -22,6 +26,9 @@ class AppStyle{
 
   static TextStyle medium_14(Color color) => TextStyle(
       color: color, fontSize: 14, fontWeight: MyFontWeight.medium);
+
+  static TextStyle medium_15(Color color) => TextStyle(
+      color: color, fontSize: 15, fontWeight: MyFontWeight.medium);
 
   static TextStyle semiBold_14(Color color) => TextStyle(
       color: color, fontSize: 14, fontWeight: MyFontWeight.bold);
@@ -75,6 +82,6 @@ class AppStyle{
 
 class MyFontWeight {
   static FontWeight regular = FontWeight.w400;
-  static FontWeight medium = FontWeight.w600;
+  static FontWeight medium = FontWeight.w500;
   static FontWeight bold = FontWeight.w700;
 }

@@ -1,9 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:market_place_app/bloc/business_registration/update_business/update_business_event.dart';
+import 'package:market_place_app/data/models/merchant_business_profile_model.dart';
 import 'package:market_place_app/screens/business_profile/upload_documents.dart';
-import 'package:market_place_app/screens/business_profile/update_profile.dart';
 import 'package:market_place_app/utils/exports.dart';
+
+OpeningHour mapFriToOpeningHour(Fri? day) {
+  if (day == null) return OpeningHour();
+  return OpeningHour(
+    open: day.open,
+    close: day.close,
+    active: day.active ?? false,
+  );
+}
+
+Map<String, OpeningHour>? mapOpeningHours(OpeningHours? hours) {
+  if (hours == null) return null;
+
+  return {
+    "Mon": mapFriToOpeningHour(hours.mon),
+    "Tue": mapFriToOpeningHour(hours.tue),
+    "Wed": mapFriToOpeningHour(hours.wed),
+    "Thu": mapFriToOpeningHour(hours.thu),
+    "Fri": mapFriToOpeningHour(hours.fri),
+    "Sat": mapFriToOpeningHour(hours.sat),
+    "Sun": mapFriToOpeningHour(hours.sun),
+  };
+}
 
 class UpdateBusinessHours extends StatefulWidget {
   final MerchantRegistrationModel merchantData;
@@ -24,12 +47,44 @@ class _UpdateBusinessHoursState extends State<UpdateBusinessHours> {
   @override
   void initState() {
     super.initState();
-    // Initialize opening hours either from existing merchantData or default
-    openingHours = widget.merchantData.openingHours ??
-        {
-          for (var d in days)
-            d: OpeningHour(open: "09:00 AM", close: "10:00 PM", active: false)
-        };
+
+    if (widget.forUpdate) {
+      // Convert API se aaye hours ko 12H me
+      openingHours = widget.merchantData.openingHours!.map(
+        (day, hour) {
+          return MapEntry(
+            day,
+            OpeningHour(
+              open: convertTo12Hour(hour.open),
+              close: convertTo12Hour(hour.close),
+              active: hour.active,
+            ),
+          );
+        },
+      );
+    } else {
+      openingHours = {
+        for (var d in days)
+          d: OpeningHour(open: "09:00 AM", close: "10:00 PM", active: false)
+      };
+    }
+
+    /// week day off
+    if (widget.merchantData.weekOffDay != null) {
+      try {
+        final dt = DateTime.parse(widget.merchantData.weekOffDay!);
+        // convert to local
+        final dtLocal = dt.toLocal();
+        // format as yyyy-MM-dd
+        weekDayOff = DateFormat('yyyy-MM-dd').format(dtLocal);
+        String formatDate = DateFormat('dd MMMM yy').format(dtLocal);
+        extraHolidayController.text = formatDate!;
+      } catch (e) {
+        weekDayOff = widget.merchantData.weekOffDay!;
+      }
+    } else {
+      weekDayOff = null;
+    }
   }
 
   String? weekDayOff;
@@ -52,9 +107,15 @@ class _UpdateBusinessHoursState extends State<UpdateBusinessHours> {
   }
 
   Future<void> _selectTime(String dayKey, bool isStart) async {
+    // Get current value or default to 09:00 AM / 10:00 PM
+    final currentHour = openingHours[dayKey]!;
+
+    print(currentHour.open);
     final initialTime = isStart
-        ? _timeOfDayFromString(openingHours[dayKey]!.open!)
-        : _timeOfDayFromString(openingHours[dayKey]!.close!);
+        ? timeOfDayFromString(
+            currentHour.open!.isEmpty ? "09:00 AM" : currentHour.open!)
+        : timeOfDayFromString(
+            currentHour.close!.isEmpty ? "10:00 PM" : currentHour.close!);
 
     final picked = await showTimePicker(
       context: context,
@@ -64,24 +125,12 @@ class _UpdateBusinessHoursState extends State<UpdateBusinessHours> {
     if (picked != null) {
       setState(() {
         if (isStart) {
-          openingHours[dayKey]!.open = _formatTime(picked);
+          currentHour.open = formatTimeOfDay(picked);
         } else {
-          openingHours[dayKey]!.close = _formatTime(picked);
+          currentHour.close = formatTimeOfDay(picked);
         }
       });
     }
-  }
-
-  TimeOfDay _timeOfDayFromString(String timeStr) {
-    final format = DateFormat("hh:mm a");
-    final date = format.parse(timeStr);
-    return TimeOfDay(hour: date.hour, minute: date.minute);
-  }
-
-  String _formatTime(TimeOfDay time) {
-    final now = DateTime.now();
-    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
-    return DateFormat("hh:mm a").format(dt);
   }
 
   Future _onSaveData() async {
@@ -173,7 +222,8 @@ class _UpdateBusinessHoursState extends State<UpdateBusinessHours> {
                         children: [
                           SizedBox(width: 2),
                           Text(dayKey,
-                              style: AppStyle.medium_14(AppColors.black20)),
+                              style: AppStyle.medium_14(AppColors.black20)
+                                  .copyWith(fontWeight: FontWeight.bold)),
                           SizedBox(width: 6),
                           Expanded(
                             child: Row(
@@ -194,7 +244,9 @@ class _UpdateBusinessHoursState extends State<UpdateBusinessHours> {
                                             : Colors.grey.shade200),
                                     child: Row(
                                       children: [
-                                        Text(item.open ?? "",
+                                        Text(
+                                            formatTimeManagement(item,
+                                                isOpen: true),
                                             style: AppStyle.normal_13(
                                                 AppColors.black20)),
                                         Icon(Icons.keyboard_arrow_down,
@@ -204,7 +256,9 @@ class _UpdateBusinessHoursState extends State<UpdateBusinessHours> {
                                   ),
                                 ),
                                 SizedBox(width: 6),
-                                Text("-"),
+                                Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Text("_")),
                                 SizedBox(width: 6),
                                 GestureDetector(
                                   onTap: item.active
@@ -221,7 +275,9 @@ class _UpdateBusinessHoursState extends State<UpdateBusinessHours> {
                                             : Colors.grey.shade200),
                                     child: Row(
                                       children: [
-                                        Text(item.close ?? "",
+                                        Text(
+                                            formatTimeManagement(item,
+                                                isOpen: false),
                                             style: AppStyle.normal_13(
                                                 AppColors.black20)),
                                         Icon(Icons.keyboard_arrow_down,
@@ -255,16 +311,14 @@ class _UpdateBusinessHoursState extends State<UpdateBusinessHours> {
               Text("Add Extra Holiday",
                   style: AppStyle.medium_16(AppColors.black20)),
               SizedBox(height: size.height * 0.01),
-              CustomTextField(
+              customTextField(
                 onTap: updateDate,
                 readOnly: true,
                 showPrefix: false,
                 hintText: 'Select holiday date',
                 controller: extraHolidayController,
                 suffix: GestureDetector(
-                  onTap: updateDate,
-                  child: Icon(Icons.date_range),
-                ),
+                    onTap: updateDate, child: Icon(Icons.date_range)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter offers valid date';

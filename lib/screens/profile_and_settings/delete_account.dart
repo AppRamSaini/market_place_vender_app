@@ -1,4 +1,4 @@
-import 'package:market_place_app/screens/settings/dialogs.dart';
+import 'package:market_place_app/utils/dialogs.dart';
 import 'package:market_place_app/utils/exports.dart';
 
 class DeleteUserAccount extends StatefulWidget {
@@ -13,7 +13,11 @@ class _DeleteUserAccountState extends State<DeleteUserAccount> {
   List<String> reasonList = [
     'Find a Better Alternative',
     'Need a Break',
-    'Do not find useful anymore',
+    'Do not find it useful anymore',
+    'Too many notifications',
+    'Privacy concerns',
+    'App is slow or buggy',
+    'Switching to another device/platform',
     'Other',
   ];
 
@@ -21,13 +25,18 @@ class _DeleteUserAccountState extends State<DeleteUserAccount> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppbar(title: 'Delete Account'),
+      appBar: customAppbar(title: 'Delete Account', context: context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: Column(
           children: [
             SizedBox(height: 50),
-            Image.asset(Assets.appLogo, width: size.width * 0.6,color: AppColors.themeColor),
+            Image.asset(Assets.appLogo,
+                width: size.width * 0.6,
+                color: AppColors.themeColor,
+                errorBuilder: (_, child, st) => ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(Assets.dummy))),
             SizedBox(height: 50),
             Text('Delete your account ',
                 style: AppStyle.medium_20(AppColors.themeColor)),
@@ -70,7 +79,7 @@ class _DeleteUserAccountState extends State<DeleteUserAccount> {
                 iconStyleData: const IconStyleData(
                     icon: Icon(Icons.arrow_drop_down_sharp), iconSize: 25),
                 dropdownStyleData: DropdownStyleData(
-                  maxHeight: 200,
+                  maxHeight: size.height * 0.8,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       color: Colors.white),
@@ -91,7 +100,7 @@ class _DeleteUserAccountState extends State<DeleteUserAccount> {
             GestureDetector(
               onTap: () {
                 if (selectedValue != null) {
-                  logOutPermissionDialog(context,forDelete: true);
+                  logOutPermissionDialog(context, forDelete: true);
                 } else {
                   snackBar(
                       context, 'Please Select Reason Type', AppColors.redColor);

@@ -3,8 +3,6 @@ import 'package:image/image.dart' as img;
 import 'dart:io';
 
 
-
-
 Future<File?> compressUsingImagePackage(File file) async {
   EasyLoading.show(status: 'Loading...');
   final image = img.decodeImage(await file.readAsBytes());

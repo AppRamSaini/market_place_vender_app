@@ -44,14 +44,15 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
     setData();
   }
 
+
   setData() {
     mobileController.text = widget.mobile.toString();
     if (widget.forUpdate) {
       nameController.text = widget.merchantData!.name.toString();
-      emailController.text = "";
+      emailController.text = widget.merchantData!.email.toString();
       pinController.text = widget.merchantData!.pinCode.toString();
       areaController.text = widget.merchantData!.landMark.toString();
-      country.text = "India";
+      country.text = widget.merchantData!.country.toString();
       state.text = widget.merchantData!.state.toString();
       city.text = widget.merchantData!.city.toString();
     }
@@ -87,7 +88,7 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   Text("Owner Name",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       hintText: 'Enter business owner name',
                       controller: nameController,
                       validator: (value) {
@@ -100,7 +101,7 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   Text("Mobile Number",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.02),
-                  CustomTextField(
+                  customTextField(
                       readOnly: true,
                       keyboardType: TextInputType.number,
                       maxLength: 10,
@@ -122,7 +123,7 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   Text("Email Address (Optional)",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                     hintText: 'Enter email address',
                     controller: emailController,
                     validator: validateEmail,
@@ -256,7 +257,7 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   // ),
 
                   /*        SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       showPrefix: false,
                       hintText: 'Enter your county',
                       controller: countryController,
@@ -269,7 +270,7 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   SizedBox(height: size.height * 0.01),
                   Text("State", style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       showPrefix: false,
                       hintText: 'Enter your state',
                       controller: stateController,
@@ -282,7 +283,7 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   SizedBox(height: size.height * 0.01),
                   Text("City", style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       showPrefix: false,
                       hintText: 'Enter your city',
                       controller: cityController,
@@ -298,7 +299,7 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   Text("Pin code",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       keyboardType: TextInputType.number,
                       maxLength: 6,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -316,7 +317,7 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   Text("Area/Landmark",
                       style: AppStyle.medium_16(AppColors.black20)),
                   SizedBox(height: size.height * 0.01),
-                  CustomTextField(
+                  customTextField(
                       showPrefix: false,
                       hintText: 'Enter your area',
                       controller: areaController,
@@ -330,20 +331,6 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                   CustomButton(
                     minWidth: size.width,
                     onPressed: () {
-                      MerchantRegistrationModel merchantData =
-                          MerchantRegistrationModel(
-                              name: nameController.text.toString(),
-                              mobile: mobileController.text.toString(),
-                              state: state.text.toString(),
-                              city: city.text.toString(),
-                              email: emailController.text.toString(),
-                              landMark: areaController.text.toString(),
-                              pinCode: pinController.text.toString(),
-                              lat: "26.9288279",
-                              long: "75.7865834",
-                              address:
-                                  "${areaController.text.toString()}, ${city.text} ${state.text}, ${country.text} ${pinController.text}");
-
                       if (_formKey.currentState!.validate()) {
                         if (state.text.isEmpty) {
                           snackBar(
@@ -352,28 +339,42 @@ class _MerchantRegistrationState extends State<MerchantRegistration> {
                               AppColors.redColor);
                         } else {
                           if (widget.forUpdate) {
-                            widget.merchantData!.name =
-                                nameController.text.toString();
-                            widget.merchantData!.mobile =
-                                mobileController.text.toString();
-                            widget.merchantData!.state = state.text.toString();
-                            widget.merchantData!.city = city.text.toString();
-                            widget.merchantData!.email =
-                                emailController.text.toString();
-                            widget.merchantData!.landMark =
-                                areaController.text.toString();
-                            widget.merchantData!.pinCode =
-                                pinController.text.toString();
-                            widget.merchantData!.lat = "26.9288279";
-                            widget.merchantData!.long = "75.7865834";
-                            widget.merchantData!.address =
-                                "${areaController.text.toString()}, ${city.text} ${state.text}, ${country.text} ${pinController.text}";
+                            final updatedMerchant =
+                                widget.merchantData!.copyWith(
+                              name: nameController.text,
+                              mobile: mobileController.text,
+                              state: state.text,
+                              city: city.text,
+                              country: country.text,
+                              email: emailController.text,
+                              landMark: areaController.text,
+                              pinCode: pinController.text,
+                              lat: "26.9288279",
+                              long: "75.7865834",
+                              address:
+                                  "${areaController.text}, ${city.text} ${state.text}, ${country.text} ${pinController.text}",
+                            );
+
                             context.read<UpdateMerchantBusinessBloc>().add(
                                 UpdateMerchantRegistrationEvent(
-                                    widget.merchantData!, context));
+                                    updatedMerchant, context));
                           } else {
+                            MerchantRegistrationModel merchantData =
+                                MerchantRegistrationModel(
+                                    name: nameController.text.toString(),
+                                    mobile: mobileController.text.toString(),
+                                    state: state.text.toString(),
+                                    city: city.text.toString(),
+                                    email: emailController.text.toString(),
+                                    landMark: areaController.text.toString(),
+                                    pinCode: pinController.text.toString(),
+                                    lat: "26.9288279",
+                                    long: "75.7865834",
+                                    address:
+                                        "${areaController.text.toString()}, ${city.text} ${state.text}, ${country.text} ${pinController.text}");
+
                             AppRouter().navigateTo(context,
-                                BusinessDetails(merchantData: merchantData));
+                                BusinessDetailsPage(merchantData: merchantData));
                           }
                         }
                       }

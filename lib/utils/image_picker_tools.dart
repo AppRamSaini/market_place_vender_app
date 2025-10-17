@@ -2,74 +2,88 @@ import 'package:market_place_app/utils/exports.dart';
 
 /// UPLOAD DOCUMENTS UI
 Widget uploadDocumentsWidget(
-        {void Function()? onTap,void Function()? onRemove,  String? txt, XFile? file}) =>
+        {void Function()? onTap,
+        void Function()? onRemove,
+        String? txt,
+        XFile? file,
+        String? docImage}) =>
     DottedBorder(
       borderType: BorderType.RRect,
       radius: const Radius.circular(12),
       dashPattern: const [8, 2],
       color: AppColors.themeColor,
       strokeWidth: 1,
-
       child: SizedBox(
         width: size.width,
-        height: size.height * 0.18,
-        child: file != null
-            ? Stack(
-                children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.file(File(file.path),
-                          fit: BoxFit.cover, width: size.width)),
-                  Column(
+        height: size.height * 0.2,
+        child: docImage != null
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: FadeInImage(
+                    fit: BoxFit.fill,
+                    placeholder: AssetImage(Assets.dummy),
+                    image: NetworkImage(docImage.toString()),
+                    imageErrorBuilder: (_, child, st) =>
+                        Image.asset(Assets.dummy, fit: BoxFit.cover)))
+            : file != null
+                ? Stack(
                     children: [
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: GestureDetector(
-                            onTap: onRemove,
-                            child: CircleAvatar(
-                                radius: 16,
-                                backgroundColor:
-                                    AppColors.redColor.withOpacity(0.5),
-                                child: Icon(Icons.clear,
-                                    size: 20, color: AppColors.black20)),
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(File(file.path),
+                              fit: BoxFit.cover, width: size.width)),
+                      Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: GestureDetector(
+                                onTap: onRemove,
+                                child: CircleAvatar(
+                                    radius: 16,
+                                    backgroundColor:
+                                        AppColors.redColor.withOpacity(0.5),
+                                    child: Icon(Icons.clear,
+                                        size: 20, color: AppColors.black20)),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      
+                        ],
+                      )
                     ],
                   )
-                ],
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(txt.toString(),
-                      style: AppStyle.normal_15(AppColors.black20)),
-                  SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: onTap,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: AppColors.theme10),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(Assets.uploadIcon, height: 32, width: 32),
-                          SizedBox(width: 10),
-                          Text("Upload",
-                              style: AppStyle.semiBold_16(AppColors.themeColor)
-                                  .copyWith(fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(txt.toString(),
+                          style: AppStyle.normal_15(AppColors.black20)),
+                      SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: onTap,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: AppColors.theme10),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(Assets.uploadIcon,
+                                  height: 32, width: 32),
+                              SizedBox(width: 10),
+                              Text("Upload",
+                                  style:
+                                      AppStyle.semiBold_16(AppColors.themeColor)
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
       ),
     );
 
@@ -193,3 +207,93 @@ Future<XFile?> pickDocumentsWidget(BuildContext context) async {
 //
 //   return croppedFile;
 // }
+
+
+/// image picker
+
+Future<File?> pickImageSheet(BuildContext context) async {
+  final picker = ImagePicker();
+  File? selectedImage;
+
+  await showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(5))),
+    builder: (_) => Padding(
+      padding: const EdgeInsets.only(left: 12, right: 12, bottom: 10),
+      child: SizedBox(
+        width: size.width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("SELECT OPTION",
+                    style: AppStyle.medium_16(AppColors.blackColor)),
+                IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(
+                      Icons.clear,
+                      color: AppColors.blackColor,
+                    ))
+              ],
+            ),
+            customDivider(),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                CustomButton(
+                  bgColor: AppColors.themeColor,
+                  txtColor: AppColors.whiteColor,
+                  onPressed: () async {
+                    final pickedFile =
+                    await picker.pickImage(source: ImageSource.camera);
+                    if (pickedFile != null) {
+                      selectedImage = File(pickedFile.path);
+                    }
+                    Navigator.pop(context); // close sheet
+                  },
+                  txt: "Pick From Camera",
+                ),
+                CustomButton(
+                  bgColor: AppColors.themeColor,
+                  txtColor: AppColors.whiteColor,
+                  onPressed: () async {
+                    final pickedFile =
+                    await picker.pickImage(source: ImageSource.gallery);
+                    if (pickedFile != null) {
+                      selectedImage = File(pickedFile.path);
+                    }
+                    Navigator.pop(context); // close sheet
+                  },
+                  txt: "Pick From Gallery",
+                ),
+                // CustomButton(
+                //   onPressed: () => Navigator.pop(context),
+                //   txt: "Cancel",
+                // ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  return selectedImage;
+}
+
+/// img url
+Widget profilePickImage(String url) => FadeInImage(
+  placeholder: AssetImage(Assets.dummy),
+  image: NetworkImage(url ?? ''),
+  imageErrorBuilder: (_, child, stack) => Image.asset(Assets.dummy,
+      width: size.height * 0.1,
+      height: size.height * 0.1,
+      fit: BoxFit.cover),
+  width: size.height * 0.1,
+  height: size.height * 0.1,
+  fit: BoxFit.cover,
+);

@@ -1,6 +1,6 @@
 import 'package:market_place_app/bloc/business_registration/create_business/business_registration_state.dart';
 import 'package:market_place_app/bloc/business_registration/update_business/update_business_event.dart';
-import 'package:market_place_app/screens/business_profile/update_profile.dart';
+import 'package:market_place_app/data/models/merchant_business_profile_model.dart';
 import '../../utils/exports.dart';
 
 class UpdateDocuments extends StatefulWidget {
@@ -28,6 +28,30 @@ class _UpdateDocumentsState extends State<UpdateDocuments> {
         'https://5.imimg.com/data5/SELLER/Default/2023/7/329938637/BT/HX/FH/74529084/pre-printed-pan-card-500x500.jpg';
     widget.merchantData.gstCertificate =
         'https://i0.wp.com/suvastika.com/wp-content/uploads/2024/09/GST-Registration-Certificate_page-0001.jpg';
+
+    List<BusinessImage>? businessImages = [
+      BusinessImage(
+          url:
+              "https://i0.wp.com/suvastika.com/wp-content/uploads/2024/09/GST-Registration-Certificate_page-0001.jpg",
+          filename: "image1.jpg"),
+      BusinessImage(
+          url:
+              "https://b.zmtcdn.com/data/pictures/3/102003/31424cab04ec30777802a10ec5ff1a7e.jpg",
+          filename: "image2.jpg"),
+      BusinessImage(
+          url:
+              "https://b.zmtcdn.com/data/dish_photos/7ac/829f7a0220e6f01558f9f6a9da53d7ac.jpeg",
+          filename: "image3.jpg"),
+      BusinessImage(
+          url:
+              "https://b.zmtcdn.com/data/pictures/chains/3/102003/0d5a917dc4e8ed63e49a1da4101226bd.jpg",
+          filename: "image3.jpg"),
+      BusinessImage(
+          url:
+              "https://b.zmtcdn.com/data/pictures/chains/3/102003/b54d7bf184c2bb18a325f9ed25c8afb8.jpg?fit=around|960:500&crop=960:500;*,*",
+          filename: "image3.jpg"),
+    ];
+    widget.merchantData.businessImages = businessImages!;
 
     if (widget.forUpdate) {
       context
@@ -98,9 +122,8 @@ class _UpdateDocumentsState extends State<UpdateDocuments> {
               children: [
                 SizedBox(height: size.height * 0.01),
                 Text(
-                  "Upload Aadhaar, PAN, GST or other required documents for business registration.",
-                  style: AppStyle.medium_16(AppColors.black20),
-                ),
+                    "Upload Aadhaar, PAN, GST or other required documents for business registration.",
+                    style: AppStyle.medium_16(AppColors.black20)),
                 SizedBox(height: size.height * 0.03),
 
                 /// Aadhaar Card
@@ -109,6 +132,7 @@ class _UpdateDocumentsState extends State<UpdateDocuments> {
                   txt: "Aadhaar Card Images",
                   children: [
                     uploadDocumentsWidget(
+                      docImage: widget.merchantData.aadhaarFront,
                       onRemove: () => setState(() => aadhaarFront = null),
                       onTap: () async {
                         final picked = await pickDocumentsWidget(context);
@@ -121,6 +145,7 @@ class _UpdateDocumentsState extends State<UpdateDocuments> {
                     ),
                     SizedBox(height: size.height * 0.01),
                     uploadDocumentsWidget(
+                      docImage: widget.merchantData.aadhaarBack,
                       onTap: () async {
                         final picked = await pickDocumentsWidget(context);
                         if (picked != null) {
@@ -141,6 +166,7 @@ class _UpdateDocumentsState extends State<UpdateDocuments> {
                   txt: "PAN Card ",
                   children: [
                     uploadDocumentsWidget(
+                      docImage: widget.merchantData.panImage,
                       onTap: () async {
                         final picked = await pickDocumentsWidget(context);
                         if (picked != null) {
@@ -161,6 +187,7 @@ class _UpdateDocumentsState extends State<UpdateDocuments> {
                   txt: "GST Certificate (Optional)",
                   children: [
                     uploadDocumentsWidget(
+                      docImage: widget.merchantData.gstCertificate,
                       onTap: () async {
                         final picked = await pickDocumentsWidget(context);
                         if (picked != null) {

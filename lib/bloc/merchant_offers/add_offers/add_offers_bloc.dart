@@ -16,11 +16,10 @@ class AddOffersBloc extends Bloc<AddOffersEvent, AddOffersState> {
     try {
       final submitOffers = await offersRepository.createOffersApi(event);
 
-
-      if (submitOffers != null && submitOffers.status == true) {
-        emit(AddOffersSuccess(offersModel: submitOffers));
+      if (submitOffers is String) {
+        emit(AddOffersFailure(error: submitOffers.toString()));
       } else {
-        emit(AddOffersInvalidResult());
+        emit(AddOffersSuccess(offersModel: submitOffers));
       }
     } catch (e) {
       emit(AddOffersFailure(error: e.toString()));

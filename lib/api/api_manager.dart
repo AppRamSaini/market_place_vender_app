@@ -1,16 +1,14 @@
-import 'package:dio/dio.dart';
-import 'package:market_place_app/data/storage/sharedpreferenc.dart';
 import 'package:market_place_app/utils/exports.dart';
 
 class ApiManager {
   final Dio _dio = Dio();
 
-  /// POST method: Supports optional token and image upload
-  /// POST method: Supports optional token and image upload
+  /// POST method: Supports optional token and file upload
   Future<dynamic> post({
     required String url,
     required Map<String, dynamic> data,
     bool useToken = true,
+    BuildContext? context,
   }) async {
     try {
       final token = useToken ? LocalStorage.getString(Pref.token) : null;
@@ -25,7 +23,6 @@ class ApiManager {
           data.values.any((value) => value is File || value is List<File>);
 
       if (hasFile) {
-        // 🔹 If any file is present → use FormData
         final formMap = <String, dynamic>{};
         for (var entry in data.entries) {
           final value = entry.value;
@@ -47,7 +44,6 @@ class ApiManager {
           }
         }
         requestData = FormData.fromMap(formMap);
-
         headers['Content-Type'] = 'multipart/form-data';
       } else {
         requestData = jsonEncode(data);
@@ -60,12 +56,15 @@ class ApiManager {
           headers: headers,
           sendTimeout: const Duration(minutes: 1),
           receiveTimeout: const Duration(minutes: 1),
+          validateStatus: (status) {
+            // Allow 200, 201 and 401 as valid responses
+            return status != null &&
+                (status >= 200 && status < 300 || status == 401 || status==500);
+          },
         ),
       );
 
-      print('---------${response.statusCode}');
-      print('---------$token');
-      return _handleStatusCode(response);
+      return _handleStatusCode(response, context: context);
     } on DioException catch (e) {
       print("DioException: $e");
       return _handleDioError(e);
@@ -75,15 +74,14 @@ class ApiManager {
     }
   }
 
-  /// 🔹 GET method: With optional query params and token
+  /// GET method: With optional query params and token
   Future<dynamic> get({
     required String url,
     Map<String, dynamic>? queryParams,
     bool useToken = true,
+    BuildContext? context,
   }) async {
     final token = useToken ? LocalStorage.getString(Pref.token) : null;
-    print(url);
-    print('TOKEN--->>$token');
     try {
       final response = await _dio.get(
         url,
@@ -91,13 +89,17 @@ class ApiManager {
         options: Options(
           headers: {
             if (useToken && token != null) 'Authorization': 'Bearer $token',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
           },
           sendTimeout: const Duration(minutes: 1),
           receiveTimeout: const Duration(minutes: 1),
+          validateStatus: (status) {
+            return status != null &&
+                (status >= 200 && status < 300 || status == 401 || status==500);
+          },
         ),
       );
-      return _handleStatusCode(response);
+      return _handleStatusCode(response, context: context);
     } on DioException catch (e) {
       print("DioException: $e");
       return _handleDioError(e);
@@ -107,8 +109,8 @@ class ApiManager {
     }
   }
 
-  /// 🔹 Handle response status codes
-  dynamic _handleStatusCode(Response response) {
+  /// Handle response status codes
+  dynamic _handleStatusCode(Response response, {BuildContext? context}) {
     switch (response.statusCode) {
       case 200:
       case 201:
@@ -116,6 +118,9 @@ class ApiManager {
       case 400:
         return "Bad Request: ${response.data['message'] ?? 'Invalid input.'}";
       case 401:
+        if (context != null) {
+          sessionExpiredDialog(context);
+        }
         return "Unauthorized: Login required";
       case 403:
         return "Forbidden: Access denied.";
@@ -128,7 +133,7 @@ class ApiManager {
     }
   }
 
-  /// 🔹 Handle Dio Errors
+  /// Handle Dio Errors
   String _handleDioError(DioException e) {
     switch (e.type) {
       case DioExceptionType.connectionTimeout:

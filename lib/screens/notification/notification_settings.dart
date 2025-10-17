@@ -17,7 +17,7 @@ class NotificationsSettingsType extends StatefulWidget {
 }
 
 class _NotificationsSettingsTypeState extends State<NotificationsSettingsType> {
-  Map<String, bool> toggleStates = {}; // ✅ Use String for UUIDs
+  Map<String, bool> toggleStates = {};
   String updatingId = '';
   String updateValue = '';
 

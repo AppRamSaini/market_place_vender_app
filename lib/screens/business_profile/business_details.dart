@@ -1,24 +1,25 @@
 import 'package:market_place_app/bloc/business_registration/update_business/update_business_event.dart';
-import 'package:market_place_app/screens/business_profile/update_profile.dart';
 import 'package:market_place_app/utils/exports.dart';
 
-class BusinessDetails extends StatefulWidget {
+class BusinessDetailsPage extends StatefulWidget {
   final MerchantRegistrationModel merchantData;
   bool forUpdate;
   final String? category;
   final String? subCategory;
+  final String? categoryID;
 
-  BusinessDetails(
+  BusinessDetailsPage(
       {super.key,
       required this.merchantData,
       this.forUpdate = false,
       this.category,
-      this.subCategory});
+      this.subCategory,
+      this.categoryID});
   @override
-  State<BusinessDetails> createState() => BusinessDetailsState();
+  State<BusinessDetailsPage> createState() => BusinessDetailsPageState();
 }
 
-class BusinessDetailsState extends State<BusinessDetails> {
+class BusinessDetailsPageState extends State<BusinessDetailsPage> {
   final TextEditingController businessNameController = TextEditingController();
   final TextEditingController businessNoController = TextEditingController();
   final TextEditingController gstNoController = TextEditingController();
@@ -36,6 +37,7 @@ class BusinessDetailsState extends State<BusinessDetails> {
   String? selectedSubCategory;
   String? selectedCategoryID;
   String? selectedSubCategoryID;
+  String ?businessLogoImg;
 
   @override
   void initState() {
@@ -43,39 +45,26 @@ class BusinessDetailsState extends State<BusinessDetails> {
     setData();
   }
 
-
-
-
-
   setData() {
     if (widget.forUpdate) {
       businessNameController.text = widget.merchantData.businessName ?? '';
-      businessNoController.text = widget.merchantData.businessRegistrationNo ?? '';
+      businessNoController.text =
+          widget.merchantData.businessRegistrationNo ?? '';
       gstNoController.text = widget.merchantData.gstNumber ?? '';
-
-      // Category and Subcategory
       selectedCategoryID = widget.merchantData.category ?? '';
       selectedSubCategoryID = widget.merchantData.subCategory ?? '';
-
       selectedCategory = widget.category ?? '';
-
       selectedSubCategory = widget.subCategory ?? '';
-
+      businessLogoImg = widget.merchantData.businessLogo??'';
       // Fetch subcategories for the selected category
-      print(selectedCategoryID);
-      if (selectedCategoryID != null) {
+      if (widget.categoryID != null) {
+
         context
             .read<BusinessSubCategoryCubit>()
-            .fetchBusinessSubCategory(selectedCategoryID.toString());
+            .fetchBusinessSubCategory(widget.categoryID.toString());
       }
     }
   }
-
-
-
-
-
-
 
   XFile? businessLogo;
   @override
@@ -152,7 +141,7 @@ class BusinessDetailsState extends State<BusinessDetails> {
                     Text("Business Name",
                         style: AppStyle.medium_16(AppColors.black20)),
                     SizedBox(height: size.height * 0.01),
-                    CustomTextField(
+                    customTextField(
                         keyboardType: TextInputType.text,
                         hintText: 'Business name',
                         controller: businessNameController,
@@ -166,7 +155,7 @@ class BusinessDetailsState extends State<BusinessDetails> {
                     Text("Business Registration Number (Optional)",
                         style: AppStyle.medium_16(AppColors.black20)),
                     SizedBox(height: size.height * 0.01),
-                    CustomTextField(
+                    customTextField(
                         keyboardType: TextInputType.text,
                         hintText: 'Enter business registration no',
                         controller: businessNoController,
@@ -180,16 +169,10 @@ class BusinessDetailsState extends State<BusinessDetails> {
                     Text("GST Number (Optional)",
                         style: AppStyle.medium_16(AppColors.black20)),
                     SizedBox(height: size.height * 0.01),
-                    CustomTextField(
+                    customTextField(
                       keyboardType: TextInputType.text,
                       hintText: 'Enter gst number',
                       controller: gstNoController,
-                      // validator: (value) {
-                      //   if (value == null || value.isEmpty) {
-                      //     return 'Please enter gst number';
-                      //   }
-                      //   return null;
-                      // }
                     ),
                     SizedBox(height: size.height * 0.02),
                     Row(
@@ -221,8 +204,7 @@ class BusinessDetailsState extends State<BusinessDetails> {
                                           value: item.name,
                                           onTap: () => setState(() =>
                                               selectedCategoryID =
-                                                  item!.id!.toString()
-                                          ),
+                                                  item!.id!.toString()),
                                           child: Text(item.name.toString(),
                                               style: AppStyle.normal_16(
                                                   AppColors.black20)),
@@ -235,13 +217,15 @@ class BusinessDetailsState extends State<BusinessDetails> {
                                               null; // Reset subcategory on category change
                                         });
 
-                                        // Fetch subcategory based on selected category
+                                        // // Fetch subcategory based on selected category
                                         var selectedCat = categories
                                             .firstWhere((c) => c.name == value);
+
+                                        print(selectedCat.datumId.toString());
                                         context
                                             .read<BusinessSubCategoryCubit>()
-                                            .fetchBusinessSubCategory(selectedCategoryID.toString());
-
+                                            .fetchBusinessSubCategory(
+                                                selectedCat.datumId.toString());
                                       },
                                       underline: Container(),
                                       iconStyleData: const IconStyleData(
@@ -412,6 +396,7 @@ class BusinessDetailsState extends State<BusinessDetails> {
                     SizedBox(
                       width: size.width * 0.6,
                       child: uploadDocumentsWidget(
+                        docImage: businessLogoImg,
                         onRemove: () => setState(() => businessLogo = null),
                         onTap: () async {
                           final picked = await pickDocumentsWidget(context);
