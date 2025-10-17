@@ -1,3 +1,4 @@
+// import 'package:image_cropper/image_cropper.dart';
 import 'package:market_place_app/utils/exports.dart';
 
 /// UPLOAD DOCUMENTS UI

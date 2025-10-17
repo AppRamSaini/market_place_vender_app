@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.6.2 <4.0.0"
+  sdk: ^3.6.2
 
 dependencies:
   flutter:
@@ -34,7 +34,7 @@ dependencies:
   slider_button: ^2.1.0
   ticket_widget: ^1.0.2
   percent_indicator: ^4.2.5
-  upgrader: ^12.1.0
+#  upgrader: ^12.1.0
   country_state_city_pro: ^0.0.6
   google_maps_flutter: ^2.12.3
   google_places_flutter: ^2.1.1

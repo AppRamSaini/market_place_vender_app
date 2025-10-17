@@ -1,11 +1,9 @@
-import 'package:market_place_app/bloc/business_registration/fetch_business_details/fetch_business_details_bloc.dart';
-import 'package:market_place_app/bloc/business_registration/fetch_business_details/fetch_business_details_event.dart';
-import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_bloc.dart';
+
 import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_event.dart';
 import 'package:market_place_app/screens/payment_approval_request/payment_approval_request.dart';
 import 'package:market_place_app/screens/profile_and_settings/profile_and_settings.dart';
 import 'package:market_place_app/utils/exports.dart';
-import 'package:upgrader/upgrader.dart';
+// import 'package:upgrader/upgrader.dart';
 import '../my_offers/my_offers_list.dart';
 
 class MerchantDashboard extends StatefulWidget {
@@ -37,9 +35,13 @@ class MerchantDashboardState extends State<MerchantDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return UpgradeAlert(
-      dialogStyle: UpgradeDialogStyle.cupertino,
-      child: Scaffold(
+    return
+
+      // UpgradeAlert(
+      // dialogStyle: UpgradeDialogStyle.cupertino,
+      // child:
+
+      Scaffold(
         body: pagesList[currentIndex],
         bottomNavigationBar: Padding(
           padding: globalBottomPadding(context),
@@ -56,7 +58,7 @@ class MerchantDashboardState extends State<MerchantDashboard> {
             ),
           ),
         ),
-      ),
+      // ),
     );
   }
 
