@@ -1,3 +1,5 @@
+import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_bloc.dart';
+import 'package:market_place_app/bloc/merchant_offers/fetch_offers/fetch_offers_event.dart';
 import 'package:market_place_app/bloc/notification_bloc/notifications_bloc.dart';
 import 'package:market_place_app/bloc/notification_bloc/notifications_state.dart';
 import 'package:market_place_app/screens/my_offers/create_offers.dart';
@@ -28,6 +30,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+
+  fetchData() {
+    context.read<FetchOffersBloc>().add(GetOffersEvent(context: context));
+  }
+
+
   late BuildContext dialogContext;
   @override
   Widget build(BuildContext context) {
@@ -40,7 +48,7 @@ class _HomePageState extends State<HomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: FloatingActionButton(
             backgroundColor: AppColors.themeColor,
-            onPressed: () => AppRouter().navigateTo(context, CreateOffers()),
+            onPressed: fetchData,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(100)),
             child: Icon(Icons.add, color: AppColors.whiteColor)),
